@@ -1,0 +1,6 @@
+.main-content {
+  margin-top: 80px; /* Espaço para o navbar fixo */
+  padding: 20px;
+  min-height: calc(100vh - 80px);
+  background-color: #f9fafb;
+}

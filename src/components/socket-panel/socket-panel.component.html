@@ -1,0 +1,42 @@
+<div class="socket-panel">
+  <div class="status-bar">
+    <span
+      class="status-indicator"
+      [class.connected]="(connectionStatus$ | async)?.status"
+    >
+      {{ (connectionStatus$ | async)?.status ? "Conectado" : "Desconectado" }}
+      <span
+        class="connection-time"
+        *ngIf="(connectionStatus$ | async)?.connectedAt"
+      >
+        (Conectado em:
+        {{
+          (connectionStatus$ | async)?.connectedAt
+            | date : "dd/MM/yyyy HH:mm:ss"
+        }})
+      </span>
+      <span
+        class="disconnection-time"
+        *ngIf="(connectionStatus$ | async)?.disconnectedAt"
+      >
+        (Desconectado em:
+        {{
+          (connectionStatus$ | async)?.disconnectedAt
+            | date : "dd/MM/yyyy HH:mm:ss"
+        }})
+      </span>
+    </span>
+  </div>
+
+  <div class="messages-container">
+    <div *ngFor="let message of messages$ | async" class="message">
+      <div class="message-header">
+        <span class="timestamp">{{
+          message.timestamp | date : "dd/MM/yyyy HH:mm:ss"
+        }}</span>
+        <span class="event">{{ message.event }}</span>
+      </div>
+      <div class="message-data">{{ message.data }}</div>
+    </div>
+  </div>
+</div>

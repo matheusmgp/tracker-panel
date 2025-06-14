@@ -1,0 +1,197 @@
+.socket-panel {
+  padding: 20px;
+  background-color: var(--card-background);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+}
+
+.status-bar {
+  margin-bottom: 20px;
+}
+
+.status-indicator {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: var(--status-disconnected);
+  color: white;
+  font-weight: bold;
+}
+
+.status-indicator.connected {
+  background-color: var(--status-connected);
+}
+
+.connection-time,
+.disconnection-time {
+  font-size: 0.9em;
+  font-weight: normal;
+  opacity: 0.9;
+  color: var(--text-color);
+}
+
+.messages-container {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.message {
+  background-color: var(--message-background);
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 8px;
+  box-shadow: var(--card-shadow);
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.9em;
+  color: var(--message-header-color);
+}
+
+.timestamp {
+  font-family: monospace;
+  color: var(--text-color);
+  font-weight: 500;
+  background-color: var(--message-data-background);
+  padding: 4px 8px;
+  border-radius: 4px;
+  opacity: 1;
+}
+
+:host-context(.dark-theme) .timestamp {
+  color: #ffffff;
+  background-color: #333333;
+  opacity: 1;
+}
+
+.event {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.message-data {
+  font-family: monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+  background-color: var(--message-data-background);
+  padding: 8px;
+  border-radius: 4px;
+  color: var(--text-color);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.panel-header h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1.5rem;
+}
+
+.connection-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background-color: #ef4444;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.connection-status.connected {
+  background-color: #10b981;
+}
+
+.clear-button {
+  padding: 8px 16px;
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  color: #4b5563;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-button:hover {
+  background-color: #e5e7eb;
+}
+
+.no-messages {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+.message-card {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.message-header {
+  background-color: #f3f4f6;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.event-name {
+  background-color: #e5e7eb;
+  color: #4b5563;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.message-content {
+  padding: 12px;
+}
+
+.message-content pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.875rem;
+  color: #1f2937;
+  background-color: #ffffff;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Estilização da barra de rolagem */
+.messages-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+  background: var(--message-data-background);
+  border-radius: 4px;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background: var(--secondary-color);
+  border-radius: 4px;
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color);
+}

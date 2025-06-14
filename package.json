@@ -3,11 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --watch",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:tracker-panel": "node dist/tracker-panel/server/server.mjs"
+    "serve:ssr:tracker-panel": "node dist/tracker-panel/server/server.mjs",
+    "tracker-server": "node tracker-server.js",
+    "tracker-listener": "node tracker-listener.js"
   },
   "private": true,
   "dependencies": {
@@ -22,6 +24,7 @@
     "express": "^5.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "ws": "^8.18.2",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
