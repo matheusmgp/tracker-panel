@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   right: 0;
-  background-color: #ffffff;
+  background-color: var(--navbar-background);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   transition: background-color 0.3s ease;
@@ -30,13 +30,14 @@
   gap: 0.75rem;
   font-size: 1.5rem;
   font-weight: bold;
-  color: #333;
+  color: var(--navbar-text);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .logo:hover {
-  color: var(--primary-color);
+  color: var(--navbar-text);
+  opacity: 0.8;
 }
 
 .logo-icon {
@@ -151,48 +152,53 @@
 }
 
 .nav-links a {
-  color: #333;
+  color: var(--navbar-text);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s;
 }
 
 .nav-links a:hover {
-  color: #666;
+  color: var(--navbar-text);
+  opacity: 0.8;
 }
 
 .nav-links a.active {
-  color: #007bff;
+  color: var(--navbar-text);
+  opacity: 1;
 }
 
 /* Estilos para o tema escuro */
 :host-context(.dark-theme) .navbar {
-  background-color: #1a1a1a;
+  background-color: var(--navbar-background);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 :host-context(.dark-theme) .logo {
-  color: #ffffff;
+  color: var(--navbar-text);
 }
 
 :host-context(.dark-theme) .logo:hover {
-  color: var(--primary-color);
+  color: var(--navbar-text);
+  opacity: 0.8;
 }
 
 :host-context(.dark-theme) .nav-links a {
-  color: #ffffff;
+  color: var(--navbar-text);
 }
 
 :host-context(.dark-theme) .nav-links a:hover {
-  color: #cccccc;
+  color: var(--navbar-text);
+  opacity: 0.8;
 }
 
 :host-context(.dark-theme) .nav-links a.active {
-  color: #4dabf7;
+  color: var(--navbar-text);
+  opacity: 1;
 }
 
 :host-context(.dark-theme) .menu-button span {
-  background-color: #ffffff;
+  background-color: var(--navbar-text);
 }
 
 @media (max-width: 768px) {
