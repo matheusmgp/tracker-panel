@@ -26,6 +26,9 @@
         }})
       </span>
     </span>
+    <span class="message-counter" *ngIf="(connectionStatus$ | async)?.status">
+      Mensagens: {{ (messages$ | async)?.length || 0 }}
+    </span>
   </div>
 
   <div class="messages-container">
