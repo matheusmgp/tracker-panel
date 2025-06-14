@@ -33,13 +33,35 @@
   background-color: var(--status-connected);
 }
 
+.message-counters {
+  display: flex;
+  gap: 12px;
+}
+
 .message-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.9em;
   color: var(--text-color);
   background-color: var(--message-data-background);
   padding: 6px 12px;
   border-radius: 16px;
   font-weight: 500;
+}
+
+.message-counter.suntech {
+  background-color: #2196f3;
+  color: white;
+}
+
+.message-counter.obd {
+  background-color: #4caf50;
+  color: white;
+}
+
+.message-counter i {
+  font-size: 0.9em;
 }
 
 .reload-button {
@@ -238,4 +260,81 @@
 
 .messages-container::-webkit-scrollbar-thumb:hover {
   background: var(--primary-color);
+}
+
+.tabs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tab-header {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 500;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-button i {
+  font-size: 0.9em;
+}
+
+.tab-counter {
+  background-color: var(--message-data-background);
+  color: var(--text-color);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: 600;
+  min-width: 24px;
+  text-align: center;
+}
+
+.tab-button.active .tab-counter {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.tab-button:hover {
+  background-color: var(--message-data-background);
+}
+
+.tab-button.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.tab-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.tab-pane {
+  height: 100%;
+}
+
+.no-messages {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: var(--text-secondary);
+  font-size: 1.1em;
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 interface TrackerMessage {
   timestamp: string;
@@ -31,6 +32,16 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
   // Observables públicos
   public connectionStatus$ = this.connectionStatusSubject.asObservable();
   public messages$ = this.messagesSubject.asObservable();
+  public activeTab: 'suntech' | 'obd' = 'suntech';
+
+  // Observables filtrados para cada aba
+  public suntechMessages$ = this.messages$.pipe(
+    map((messages) => messages.filter((msg) => msg.event.startsWith('SUNTECH')))
+  );
+
+  public obdMessages$ = this.messages$.pipe(
+    map((messages) => messages.filter((msg) => msg.event.startsWith('OBD')))
+  );
 
   private readonly wsUrl = 'ws://localhost:3001';
 

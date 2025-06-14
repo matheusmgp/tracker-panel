@@ -33,6 +33,15 @@ const broadcastToWebSocket = (data) => {
           data: data,
         })
       );
+      // setTimeout(() => {
+      //   client.send(
+      //     JSON.stringify({
+      //       timestamp: new Date().toISOString(),
+      //       event: `OBD - ${event} - ${serial}`,
+      //       data: data,
+      //     })
+      //   );
+      // }, 5); // 10ms de delay
     }
   });
 };

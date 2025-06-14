@@ -26,23 +26,74 @@
         }})
       </span>
     </span>
-    <span class="message-counter" *ngIf="(connectionStatus$ | async)?.status">
-      Mensagens: {{ (messages$ | async)?.length || 0 }}
-    </span>
     <button class="reload-button" (click)="reloadPage()">
       <i class="fas fa-sync-alt"></i> Recarregar
     </button>
   </div>
 
-  <div class="messages-container">
-    <div *ngFor="let message of messages$ | async" class="message">
-      <div class="message-header">
-        <span class="timestamp">{{
-          message.timestamp | date : "dd/MM/yyyy HH:mm:ss"
+  <div class="tabs">
+    <div class="tab-header">
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'suntech'"
+        (click)="activeTab = 'suntech'"
+      >
+        <i class="fas fa-car"></i>
+        Suntech
+        <span class="tab-counter">{{
+          (suntechMessages$ | async)?.length || 0
         }}</span>
-        <span class="event">{{ message.event }}</span>
+      </button>
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'obd'"
+        (click)="activeTab = 'obd'"
+      >
+        <i class="fas fa-car"></i>
+        OBD
+        <span class="tab-counter">{{
+          (obdMessages$ | async)?.length || 0
+        }}</span>
+      </button>
+    </div>
+
+    <div class="tab-content">
+      <div class="tab-pane" *ngIf="activeTab === 'suntech'">
+        <div class="messages-container">
+          <div *ngFor="let message of suntechMessages$ | async" class="message">
+            <div class="message-header">
+              <span class="timestamp">{{
+                message.timestamp | date : "dd/MM/yyyy HH:mm:ss"
+              }}</span>
+              <span class="event">{{ message.event }}</span>
+            </div>
+            <div class="message-data">{{ message.data }}</div>
+          </div>
+          <div
+            class="no-messages"
+            *ngIf="(suntechMessages$ | async)?.length === 0"
+          >
+            <p>Nenhuma mensagem Suntech disponível</p>
+          </div>
+        </div>
       </div>
-      <div class="message-data">{{ message.data }}</div>
+
+      <div class="tab-pane" *ngIf="activeTab === 'obd'">
+        <div class="messages-container">
+          <div *ngFor="let message of obdMessages$ | async" class="message">
+            <div class="message-header">
+              <span class="timestamp">{{
+                message.timestamp | date : "dd/MM/yyyy HH:mm:ss"
+              }}</span>
+              <span class="event">{{ message.event }}</span>
+            </div>
+            <div class="message-data">{{ message.data }}</div>
+          </div>
+          <div class="no-messages" *ngIf="(obdMessages$ | async)?.length === 0">
+            <p>Nenhuma mensagem OBD disponível</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
