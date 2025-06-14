@@ -1,6 +1,11 @@
 .main-content {
   margin-top: 80px; /* Espaço para o navbar fixo */
-  padding: 20px;
+  padding: 0;
   min-height: calc(100vh - 80px);
-  background-color: #f9fafb;
+  background-color: var(--background-color);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }

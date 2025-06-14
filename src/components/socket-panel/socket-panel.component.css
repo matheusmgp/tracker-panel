@@ -3,6 +3,14 @@
   background-color: var(--card-background);
   border-radius: 8px;
   box-shadow: var(--card-shadow);
+  width: 90vw;
+  height: calc(90vh - 80px);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: calc(50% + 40px);
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .status-bar {
@@ -58,8 +66,9 @@
 }
 
 .messages-container {
-  max-height: 600px;
+  max-height: calc(90vh - 180px);
   overflow-y: auto;
+  flex: 1;
 }
 
 .message {
