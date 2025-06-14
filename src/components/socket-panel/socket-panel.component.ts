@@ -170,4 +170,8 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  reloadPage(): void {
+    window.location.reload();
+  }
 }

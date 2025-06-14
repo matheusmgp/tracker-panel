@@ -34,6 +34,29 @@
   font-weight: 500;
 }
 
+.reload-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 0.9em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.reload-button:hover {
+  background-color: var(--secondary-color);
+}
+
+.reload-button i {
+  font-size: 0.9em;
+}
+
 .messages-container {
   max-height: 600px;
   overflow-y: auto;
