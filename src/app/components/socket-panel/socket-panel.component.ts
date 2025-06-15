@@ -254,11 +254,6 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     window.location.reload();
   }
 
-  public clearMessages(): void {
-    console.log('Limpando lista de mensagens...');
-    this.messagesSubject.next([]);
-  }
-
   async getTrackerInfo(serialNumber: string): Promise<void> {
     try {
       this.sgiApiService.getInfoBySerial(serialNumber).subscribe({
