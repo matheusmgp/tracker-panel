@@ -2,49 +2,48 @@
   <div class="navbar-container">
     <div class="navbar-brand">
       <a routerLink="/" class="logo">
-        <svg
-          class="logo-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
-            fill="currentColor"
-          />
-          <path
-            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
-            stroke="currentColor"
-            stroke-width="0.5"
-          />
-        </svg>
+        <img [src]="logoPath" alt="Logo" class="logo-icon" />
         <span>Painel dos rastreadores</span>
       </a>
     </div>
 
-    <div class="navbar-actions">
-      <button
-        class="menu-button"
-        (click)="toggleMenu()"
-        [class.active]="isMenuOpen"
-      >
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+    <div class="navbar-menu">
+      <ul class="nav-links">
+        <li>
+          <a routerLink="/painel" routerLinkActive="active">
+            <i class="fas fa-chart-line"></i>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a routerLink="/configuracoes" routerLinkActive="active">
+            <i class="fas fa-cog"></i>
+            Configurações
+          </a>
+        </li>
+      </ul>
     </div>
 
-    <div class="navbar-menu" [class.active]="isMenuOpen"></div>
-    <button
-      class="theme-toggle"
-      (click)="toggleTheme()"
-      [class.dark]="isDarkTheme$ | async"
-    >
-      <div class="toggle-track">
-        <div class="toggle-thumb">
-          <i class="fas fa-car"></i>
+    <div class="navbar-actions">
+      <button
+        class="theme-toggle"
+        (click)="toggleTheme()"
+        [class.dark]="isDarkTheme$ | async"
+      >
+        <div class="toggle-track">
+          <div class="toggle-thumb">
+            <i
+              class="fas"
+              [class.fa-sun]="!(isDarkTheme$ | async)"
+              [class.fa-moon]="isDarkTheme$ | async"
+            ></i>
+          </div>
         </div>
-      </div>
-    </button>
+      </button>
+    </div>
   </div>
 </nav>
+
+<div class="top-bar">
+  <div class="top-bar-content"></div>
+</div>

@@ -1,6 +1,7 @@
 .main-content {
-  margin-top: 80px; /* Espaço para o navbar fixo */
-  padding: 0;
+  margin-left: 250px; /* Largura da navbar lateral */
+  margin-top: 80px; /* Altura da barra superior */
+  padding: 20px;
   min-height: calc(100vh - 80px);
   background-color: var(--background-color);
   position: relative;
@@ -8,4 +9,14 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  transition: margin-left 0.3s ease;
+  width: calc(100% - 250px); /* Ajusta a largura para não sobrepor a navbar */
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    margin-top: 80px;
+    width: 100%;
+  }
 }
