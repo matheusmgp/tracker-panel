@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { SocketPanelComponent } from '../components/socket-panel/socket-panel.component';
+import { SocketPanelComponent } from './components/socket-panel/socket-panel.component';
 
 export const routes: Routes = [
   {

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SgiApiService } from '../../services/sgi-api.service';
+import { SgiApiService } from '../../../services/sgi-api.service';
 
 @Component({
   selector: 'app-socket-panel',
