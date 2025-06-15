@@ -188,9 +188,9 @@
 }
 
 .messages-container {
-  max-height: calc(90vh - 180px);
+  height: calc(100vh - 250px);
   overflow-y: auto;
-  flex: 1;
+  padding: 10px;
 }
 
 .message {
@@ -434,10 +434,13 @@
 .tab-content {
   flex: 1;
   overflow: hidden;
+  height: 100%;
 }
 
 .tab-pane {
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .no-messages {
