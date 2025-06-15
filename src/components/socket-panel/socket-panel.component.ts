@@ -2,18 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-interface TrackerMessage {
-  timestamp: string;
-  event: string;
-  data: string;
-}
-
-interface ConnectionInfo {
-  status: boolean;
-  connectedAt?: string;
-  disconnectedAt?: string;
-}
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-socket-panel',
@@ -28,11 +17,13 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     status: false,
   });
   private messagesSubject = new BehaviorSubject<TrackerMessage[]>([]);
+  public selectedTrackerInfo = new BehaviorSubject<TrackerInfo | null>(null);
 
   // Observables públicos
   public connectionStatus$ = this.connectionStatusSubject.asObservable();
   public messages$ = this.messagesSubject.asObservable();
   public activeTab: 'suntech' | 'obd' = 'suntech';
+  public selectedTrackerInfo$ = this.selectedTrackerInfo.asObservable();
 
   // Observables filtrados para cada aba
   public suntechMessages$ = this.messages$.pipe(
@@ -44,8 +35,9 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
   );
 
   private readonly wsUrl = 'ws://localhost:3001';
+  private readonly apiUrl = 'http://localhost:9001';
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {
     console.log('Iniciando componente SocketPanel...');
@@ -184,5 +176,31 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
 
   reloadPage(): void {
     window.location.reload();
+  }
+
+  async getTrackerInfo(serialNumber: string): Promise<void> {
+    try {
+      this.http.get<any>(`${this.apiUrl}/trackers/${serialNumber}`).subscribe({
+        next: (response) => {
+          if (response) {
+            this.selectedTrackerInfo.next(response.data as TrackerInfo);
+          }
+        },
+        error: (error) => {
+          console.error('Erro ao buscar informações do tracker:', error);
+          this.selectedTrackerInfo.next(null);
+        },
+      });
+    } catch (error) {
+      console.error('Erro ao buscar informações do tracker:', error);
+      this.selectedTrackerInfo.next(null);
+    }
+  }
+
+  onMessageClick(message: TrackerMessage): void {
+    const serialNumber = message.data.split(';')[1];
+    if (serialNumber) {
+      this.getTrackerInfo(serialNumber);
+    }
   }
 }
