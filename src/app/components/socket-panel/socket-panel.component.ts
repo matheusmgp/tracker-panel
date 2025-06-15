@@ -248,4 +248,9 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
   onSearchChange(value: string): void {
     this.searchTermSubject.next(value);
   }
+
+  clearSearch(): void {
+    this.inputValue = '';
+    this.searchTermSubject.next('');
+  }
 }
