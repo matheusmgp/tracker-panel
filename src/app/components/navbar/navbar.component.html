@@ -1,18 +1,27 @@
-<nav class="navbar">
+<nav class="navbar" [class.menu-open]="isMenuOpen">
   <div class="navbar-container">
     <div class="navbar-brand">
       <a routerLink="/" class="logo">
         <img [src]="logoPath" alt="Logo" class="logo-icon" />
-        <span>Painel dos rastreadores</span>
+        <span class="brand-text">Painel dos rastreadores</span>
       </a>
+      <button
+        class="menu-toggle"
+        (click)="toggleMenu()"
+        [class.active]="isMenuOpen"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
 
-    <div class="navbar-menu">
+    <div class="navbar-menu" [class.active]="isMenuOpen">
       <ul class="nav-links">
         <li>
           <a routerLink="/painel" routerLinkActive="active">
             <i class="fas fa-chart-line"></i>
-            Painel
+            <span>Painel</span>
           </a>
         </li>
       </ul>
@@ -23,6 +32,7 @@
         class="theme-toggle"
         (click)="toggleTheme()"
         [class.dark]="isDarkTheme$ | async"
+        aria-label="Alternar tema"
       >
         <div class="toggle-track">
           <div class="toggle-thumb">
@@ -38,6 +48,4 @@
   </div>
 </nav>
 
-<div class="top-bar">
-  <div class="top-bar-content"></div>
-</div>
+<div class="top-bar"></div>
