@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SgiApiService } from '../../../services/sgi-api.service';
+import { SgiApiService } from '../../services/sgi-api.service';
 
 @Component({
   selector: 'app-socket-panel',
