@@ -1,116 +1,129 @@
 <div class="socket-panel">
-  <div class="status-bar">
-    <div class="right-section">
-      <div class="input-container">
-        <input
-          type="text"
-          [(ngModel)]="inputValue"
-          (ngModelChange)="onSearchChange($event)"
-          placeholder="Pesquisar..."
-        />
-        <button class="clear-button" (click)="clearSearch()" *ngIf="inputValue">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
+  <!-- Painel de Status -->
+  <div class="status-panel">
+    <div class="status-header">
+      <h2>Status das Conexões</h2>
     </div>
-    <div class="connection-status">
-      <div
-        class="status-indicator"
-        [class.connected]="(suntechConnectionStatus$ | async)?.status"
-        (click)="showWebSocketInfo('suntech')"
-        style="cursor: pointer"
-      >
-        <span
-          >Suntech:
-          {{
-            (suntechConnectionStatus$ | async)?.status
-              ? "Conectado"
-              : "Desconectado"
-          }}</span
+    <div class="status-content">
+      <div class="connection-status">
+        <div
+          class="status-indicator"
+          [class.connected]="(suntechConnectionStatus$ | async)?.status"
+          (click)="showWebSocketInfo('suntech')"
+          style="cursor: pointer"
         >
-        <span
-          class="connection-time"
-          *ngIf="(suntechConnectionStatus$ | async)?.connectedAt"
+          <span
+            >Suntech:
+            {{
+              (suntechConnectionStatus$ | async)?.status
+                ? "Conectado"
+                : "Desconectado"
+            }}</span
+          >
+          <span
+            class="connection-time"
+            *ngIf="(suntechConnectionStatus$ | async)?.connectedAt"
+          >
+            (Conectado em:
+            {{
+              (suntechConnectionStatus$ | async)?.connectedAt
+                | date : "dd/MM/yyyy HH:mm:ss"
+            }})
+          </span>
+          <span
+            class="disconnection-time"
+            *ngIf="(suntechConnectionStatus$ | async)?.disconnectedAt"
+          >
+            (Desconectado em:
+            {{
+              (suntechConnectionStatus$ | async)?.disconnectedAt
+                | date : "dd/MM/yyyy HH:mm:ss"
+            }})
+          </span>
+        </div>
+        <div
+          class="status-indicator"
+          [class.connected]="(obdConnectionStatus$ | async)?.status"
+          (click)="showWebSocketInfo('obd')"
+          style="cursor: pointer"
         >
-          (Conectado em:
-          {{
-            (suntechConnectionStatus$ | async)?.connectedAt
-              | date : "dd/MM/yyyy HH:mm:ss"
-          }})
-        </span>
-        <span
-          class="disconnection-time"
-          *ngIf="(suntechConnectionStatus$ | async)?.disconnectedAt"
-        >
-          (Desconectado em:
-          {{
-            (suntechConnectionStatus$ | async)?.disconnectedAt
-              | date : "dd/MM/yyyy HH:mm:ss"
-          }})
-        </span>
-      </div>
-      <div
-        class="status-indicator"
-        [class.connected]="(obdConnectionStatus$ | async)?.status"
-        (click)="showWebSocketInfo('obd')"
-        style="cursor: pointer"
-      >
-        <span
-          >OBD:
-          {{
-            (obdConnectionStatus$ | async)?.status
-              ? "Conectado"
-              : "Desconectado"
-          }}</span
-        >
-        <span
-          class="connection-time"
-          *ngIf="(obdConnectionStatus$ | async)?.connectedAt"
-        >
-          (Conectado em:
-          {{
-            (obdConnectionStatus$ | async)?.connectedAt
-              | date : "dd/MM/yyyy HH:mm:ss"
-          }})
-        </span>
-        <span
-          class="disconnection-time"
-          *ngIf="(obdConnectionStatus$ | async)?.disconnectedAt"
-        >
-          (Desconectado em:
-          {{
-            (obdConnectionStatus$ | async)?.disconnectedAt
-              | date : "dd/MM/yyyy HH:mm:ss"
-          }})
-        </span>
+          <span
+            >OBD:
+            {{
+              (obdConnectionStatus$ | async)?.status
+                ? "Conectado"
+                : "Desconectado"
+            }}</span
+          >
+          <span
+            class="connection-time"
+            *ngIf="(obdConnectionStatus$ | async)?.connectedAt"
+          >
+            (Conectado em:
+            {{
+              (obdConnectionStatus$ | async)?.connectedAt
+                | date : "dd/MM/yyyy HH:mm:ss"
+            }})
+          </span>
+          <span
+            class="disconnection-time"
+            *ngIf="(obdConnectionStatus$ | async)?.disconnectedAt"
+          >
+            (Desconectado em:
+            {{
+              (obdConnectionStatus$ | async)?.disconnectedAt
+                | date : "dd/MM/yyyy HH:mm:ss"
+            }})
+          </span>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="tabs">
-    <div class="tab-header">
-      <button
-        class="tab-button"
-        [class.active]="activeTab === 'suntech'"
-        (click)="activeTab = 'suntech'"
-      >
-        <i class="fas fa-car"></i>
-        Suntech
-        <span class="tab-counter">{{
-          (suntechMessages$ | async)?.length || 0
-        }}</span>
-      </button>
-      <button
-        class="tab-button"
-        [class.active]="activeTab === 'obd'"
-        (click)="activeTab = 'obd'"
-      >
-        <i class="fas fa-car"></i>
-        OBD
-        <span class="tab-counter">{{
-          (obdMessages$ | async)?.length || 0
-        }}</span>
-      </button>
+  <!-- Painel de Mensagens -->
+  <div class="messages-panel">
+    <div class="messages-header">
+      <div class="search-container">
+        <div class="input-container">
+          <input
+            type="text"
+            [(ngModel)]="inputValue"
+            (ngModelChange)="onSearchChange($event)"
+            placeholder="Pesquisar..."
+          />
+          <button
+            class="clear-button"
+            (click)="clearSearch()"
+            *ngIf="inputValue"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div class="tab-header">
+        <button
+          class="tab-button"
+          [class.active]="activeTab === 'suntech'"
+          (click)="activeTab = 'suntech'"
+        >
+          <i class="fas fa-car"></i>
+          Suntech
+          <span class="tab-counter">{{
+            (suntechMessages$ | async)?.length || 0
+          }}</span>
+        </button>
+        <button
+          class="tab-button"
+          [class.active]="activeTab === 'obd'"
+          (click)="activeTab = 'obd'"
+        >
+          <i class="fas fa-car"></i>
+          OBD
+          <span class="tab-counter">{{
+            (obdMessages$ | async)?.length || 0
+          }}</span>
+        </button>
+      </div>
     </div>
 
     <div class="tab-content">
