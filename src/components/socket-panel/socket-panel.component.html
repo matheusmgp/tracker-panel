@@ -91,6 +91,9 @@
               <span class="event">{{ message.event }}</span>
             </div>
             <div class="message-data">{{ message.data }}</div>
+            <button class="info-button" (click)="onMessageClick(message)">
+              <i class="fas fa-info-circle"></i> Ver informações do rastreador
+            </button>
           </div>
           <div class="no-messages" *ngIf="(obdMessages$ | async)?.length === 0">
             <p>Nenhuma mensagem OBD disponível</p>
