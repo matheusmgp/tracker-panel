@@ -70,7 +70,7 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     })
   );
 
-  private readonly wsUrl = 'ws://localhost:3001';
+  private readonly wsUrl = 'ws://localhost:3002';
 
   constructor(private sgiApiService: SgiApiService) {}
 
