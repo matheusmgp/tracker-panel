@@ -138,14 +138,7 @@ func (h *Hub) handleWebSocket(w http.ResponseWriter, r *http.Request) {
 
 	h.register <- conn
 
-	// Enviar mensagem de boas-vindas
-	welcomeMsg := Message{
-		Timestamp: time.Now().Format(time.RFC3339),
-		Event:     "CONNECTION",
-		Data:      "WebSocket conectado com sucesso",
-	}
-	welcomeJSON, _ := json.Marshal(welcomeMsg)
-	conn.WriteMessage(websocket.TextMessage, welcomeJSON)
+
 
 	// Goroutine para gerenciar a conexão
 	go func() {

@@ -76,8 +76,17 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     })
   );
 
-  private readonly suntechWsUrl = 'ws://localhost:3001';
-  private readonly obdWsUrl = 'ws://localhost:3002';
+  public readonly suntechWsUrl = 'ws://localhost:3001';
+  public readonly obdWsUrl = 'ws://localhost:3002';
+
+  private selectedWebSocketInfoSubject = new BehaviorSubject<{
+    type: 'suntech' | 'obd';
+    status: boolean;
+    connectedAt?: string;
+    disconnectedAt?: string;
+  } | null>(null);
+
+  selectedWebSocketInfo$ = this.selectedWebSocketInfoSubject.asObservable();
 
   constructor(private sgiApiService: SgiApiService) {}
 
@@ -284,5 +293,23 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
   clearSearch(): void {
     this.inputValue = '';
     this.searchTermSubject.next('');
+  }
+
+  showWebSocketInfo(type: 'suntech' | 'obd'): void {
+    const status =
+      type === 'suntech'
+        ? this.suntechConnectionStatusSubject.value
+        : this.obdConnectionStatusSubject.value;
+
+    this.selectedWebSocketInfoSubject.next({
+      type,
+      status: status.status,
+      connectedAt: status.connectedAt,
+      disconnectedAt: status.disconnectedAt,
+    });
+  }
+
+  closeWebSocketInfo(): void {
+    this.selectedWebSocketInfoSubject.next(null);
   }
 }

@@ -4,6 +4,8 @@
       <div
         class="status-indicator"
         [class.connected]="(suntechConnectionStatus$ | async)?.status"
+        (click)="showWebSocketInfo('suntech')"
+        style="cursor: pointer"
       >
         <span
           >Suntech:
@@ -37,6 +39,8 @@
       <div
         class="status-indicator"
         [class.connected]="(obdConnectionStatus$ | async)?.status"
+        (click)="showWebSocketInfo('obd')"
+        style="cursor: pointer"
       >
         <span
           >OBD:
@@ -251,6 +255,55 @@
             <span class="label">Situação do Veículo:</span>
             <span class="value">{{ trackerInfo.vehiclesituation }}</span>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Informações do WebSocket -->
+<div class="websocket-modal" *ngIf="selectedWebSocketInfo$ | async as info">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>
+        Informações do WebSocket
+        {{ info.type === "suntech" ? "Suntech" : "OBD" }}
+      </h2>
+      <button class="close-button" (click)="closeWebSocketInfo()">
+        &times;
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">URL:</span>
+          <span class="value">{{
+            info.type === "suntech" ? suntechWsUrl : obdWsUrl
+          }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Porta:</span>
+          <span class="value">{{
+            info.type === "suntech" ? "3001" : "3002"
+          }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Status:</span>
+          <span class="value" [class.connected]="info.status">
+            {{ info.status ? "Conectado" : "Desconectado" }}
+          </span>
+        </div>
+        <div class="info-item" *ngIf="info.connectedAt">
+          <span class="label">Conectado em:</span>
+          <span class="value">{{
+            info.connectedAt | date : "dd/MM/yyyy HH:mm:ss"
+          }}</span>
+        </div>
+        <div class="info-item" *ngIf="info.disconnectedAt">
+          <span class="label">Desconectado em:</span>
+          <span class="value">{{
+            info.disconnectedAt | date : "dd/MM/yyyy HH:mm:ss"
+          }}</span>
         </div>
       </div>
     </div>
