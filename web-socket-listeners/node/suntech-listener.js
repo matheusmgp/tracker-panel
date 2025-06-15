@@ -26,22 +26,16 @@ const broadcastToWebSocket = (data) => {
     if (client.readyState === WebSocket.OPEN) {
       const serial = data.split(";")[1];
       const event = data.split(";")[0];
-      client.send(
-        JSON.stringify({
-          timestamp: new Date().toISOString(),
-          event: `SUNTECH - ${event} - ${serial}`,
-          data: data,
-        })
-      );
+
       setTimeout(() => {
         client.send(
           JSON.stringify({
             timestamp: new Date().toISOString(),
-            event: `OBD - ${event} - ${serial}`,
+            event: `${event} - ${serial}`,
             data: data,
           })
         );
-      }, 5); // 10ms de delay
+      }, 5);
     }
   });
 };

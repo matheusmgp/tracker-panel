@@ -31,16 +31,23 @@
 }
 
 .status-indicator {
-  display: inline-block;
-  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
   border-radius: 20px;
-  background-color: var(--status-disconnected);
+  background-color: #ff4444;
   color: white;
-  font-weight: bold;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  border: none;
+  outline: none;
+  overflow: hidden;
+  transform: translateZ(0);
 }
 
 .status-indicator.connected {
-  background-color: var(--status-connected);
+  background-color: #00c851;
 }
 
 .message-counters {
@@ -219,12 +226,17 @@
   color: var(--text-color);
 }
 
+.connection-status {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
 .connection-time,
 .disconnection-time {
-  font-size: 0.9em;
-  font-weight: normal;
-  opacity: 0.9;
-  color: var(--text-color);
+  font-size: 12px;
+  opacity: 0.8;
+  margin-left: 8px;
 }
 
 .panel-header {
@@ -245,7 +257,7 @@
 .connection-status {
   padding: 6px 12px;
   border-radius: 20px;
-  background-color: #ef4444;
+  background-color: var(--message-data-background);
   color: white;
   font-size: 0.875rem;
   font-weight: 500;

@@ -1,31 +1,73 @@
 <div class="socket-panel">
   <div class="status-bar">
-    <span
-      class="status-indicator"
-      [class.connected]="(connectionStatus$ | async)?.status"
-    >
-      {{ (connectionStatus$ | async)?.status ? "Conectado" : "Desconectado" }}
-      <span
-        class="connection-time"
-        *ngIf="(connectionStatus$ | async)?.connectedAt"
+    <div class="connection-status">
+      <div
+        class="status-indicator"
+        [class.connected]="(suntechConnectionStatus$ | async)?.status"
       >
-        (Conectado em:
-        {{
-          (connectionStatus$ | async)?.connectedAt
-            | date : "dd/MM/yyyy HH:mm:ss"
-        }})
-      </span>
-      <span
-        class="disconnection-time"
-        *ngIf="(connectionStatus$ | async)?.disconnectedAt"
+        <span
+          >Suntech:
+          {{
+            (suntechConnectionStatus$ | async)?.status
+              ? "Conectado"
+              : "Desconectado"
+          }}</span
+        >
+        <span
+          class="connection-time"
+          *ngIf="(suntechConnectionStatus$ | async)?.connectedAt"
+        >
+          (Conectado em:
+          {{
+            (suntechConnectionStatus$ | async)?.connectedAt
+              | date : "dd/MM/yyyy HH:mm:ss"
+          }})
+        </span>
+        <span
+          class="disconnection-time"
+          *ngIf="(suntechConnectionStatus$ | async)?.disconnectedAt"
+        >
+          (Desconectado em:
+          {{
+            (suntechConnectionStatus$ | async)?.disconnectedAt
+              | date : "dd/MM/yyyy HH:mm:ss"
+          }})
+        </span>
+      </div>
+      <div
+        class="status-indicator"
+        [class.connected]="(obdConnectionStatus$ | async)?.status"
       >
-        (Desconectado em:
-        {{
-          (connectionStatus$ | async)?.disconnectedAt
-            | date : "dd/MM/yyyy HH:mm:ss"
-        }})
-      </span>
-    </span>
+        <span
+          >OBD:
+          {{
+            (obdConnectionStatus$ | async)?.status
+              ? "Conectado"
+              : "Desconectado"
+          }}</span
+        >
+        <span
+          class="connection-time"
+          *ngIf="(obdConnectionStatus$ | async)?.connectedAt"
+        >
+          (Conectado em:
+          {{
+            (obdConnectionStatus$ | async)?.connectedAt
+              | date : "dd/MM/yyyy HH:mm:ss"
+          }})
+        </span>
+        <span
+          class="disconnection-time"
+          *ngIf="(obdConnectionStatus$ | async)?.disconnectedAt"
+        >
+          (Desconectado em:
+          {{
+            (obdConnectionStatus$ | async)?.disconnectedAt
+              | date : "dd/MM/yyyy HH:mm:ss"
+          }})
+        </span>
+      </div>
+    </div>
     <div class="right-section">
       <div class="input-container">
         <input
