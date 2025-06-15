@@ -1,5 +1,18 @@
 <div class="socket-panel">
   <div class="status-bar">
+    <div class="right-section">
+      <div class="input-container">
+        <input
+          type="text"
+          [(ngModel)]="inputValue"
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Pesquisar..."
+        />
+        <button class="clear-button" (click)="clearSearch()" *ngIf="inputValue">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
     <div class="connection-status">
       <div
         class="status-indicator"
@@ -70,19 +83,6 @@
               | date : "dd/MM/yyyy HH:mm:ss"
           }})
         </span>
-      </div>
-    </div>
-    <div class="right-section">
-      <div class="input-container">
-        <input
-          type="text"
-          [(ngModel)]="inputValue"
-          (ngModelChange)="onSearchChange($event)"
-          placeholder="Pesquisar..."
-        />
-        <button class="clear-button" (click)="clearSearch()" *ngIf="inputValue">
-          <i class="fas fa-times"></i>
-        </button>
       </div>
     </div>
   </div>
