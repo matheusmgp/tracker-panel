@@ -15,6 +15,7 @@ interface TrackerInfo {
   device: string;
   blocker: boolean;
   situation: string;
+  vehiclesituation: string;
   eletronicfence: string;
   version: string;
   hdr_network: string;

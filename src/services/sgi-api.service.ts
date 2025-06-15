@@ -12,7 +12,7 @@ export class SgiApiService extends BaseApiService {
     super(http, environment.sgiURL);
   }
 
-  getInfoBySerial(serial: string): Observable<any> {
+  public getInfoBySerial(serial: string): Observable<any> {
     return this.get<any>(`trackers/${serial}`);
   }
 }

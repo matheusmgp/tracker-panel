@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { SgiApiService } from '../../services/sgi-api.service';
 
 @Component({
   selector: 'app-socket-panel',
@@ -35,9 +35,8 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
   );
 
   private readonly wsUrl = 'ws://localhost:3001';
-  private readonly apiUrl = 'http://localhost:9001';
 
-  constructor(private http: HttpClient) {}
+  constructor(private sgiApiService: SgiApiService) {}
 
   ngOnInit() {
     console.log('Iniciando componente SocketPanel...');
@@ -178,9 +177,14 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     window.location.reload();
   }
 
+  public clearMessages(): void {
+    console.log('Limpando lista de mensagens...');
+    this.messagesSubject.next([]);
+  }
+
   async getTrackerInfo(serialNumber: string): Promise<void> {
     try {
-      this.http.get<any>(`${this.apiUrl}/trackers/${serialNumber}`).subscribe({
+      this.sgiApiService.getInfoBySerial(serialNumber).subscribe({
         next: (response) => {
           if (response) {
             this.selectedTrackerInfo.next(response.data as TrackerInfo);
@@ -197,7 +201,7 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     }
   }
 
-  onMessageClick(message: TrackerMessage): void {
+  onClickSeeInfo(message: TrackerMessage): void {
     const serialNumber = message.data.split(';')[1];
     if (serialNumber) {
       this.getTrackerInfo(serialNumber);
