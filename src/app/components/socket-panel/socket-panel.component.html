@@ -289,7 +289,11 @@
         </div>
         <div class="info-item">
           <span class="label">Status:</span>
-          <span class="value" [class.connected]="info.status">
+          <span
+            class="value"
+            [class.connected]="info.status"
+            [class.disconnected]="!info.status"
+          >
             {{ info.status ? "Conectado" : "Desconectado" }}
           </span>
         </div>

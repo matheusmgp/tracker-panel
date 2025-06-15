@@ -603,3 +603,7 @@
 .websocket-modal .info-item .value.connected {
   color: #00c851;
 }
+
+.websocket-modal .info-item .value.disconnected {
+  color: #ff4444;
+}
