@@ -99,7 +99,7 @@ func (h *Hub) broadcastToWebSocket(data string) {
 
 	message := Message{
 		Timestamp: time.Now().Format(time.RFC3339),
-		Event:     fmt.Sprintf("SUNTECH - %s - %s", event, serial),
+		Event:     fmt.Sprintf("%s - %s", event, serial),
 		Data:      data,
 	}
 

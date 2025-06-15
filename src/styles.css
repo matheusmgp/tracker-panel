@@ -98,7 +98,7 @@ body {
   align-items: center;
   gap: 10px;
   padding: 8px 16px;
-  border-radius: 20px;
+  border-radius: 5px;
   background-color: var(--status-disconnected);
   color: white;
   font-weight: bold;

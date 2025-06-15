@@ -1,14 +1,35 @@
 .socket-panel {
-  padding: 20px;
-  background-color: var(--card-background);
+  background-color: var(--background-color);
   border-radius: 8px;
-  box-shadow: var(--card-shadow);
-  width: 100%;
-  height: calc(100vh - 180px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px;
+  height: calc(90vh - 120px);
+  width: 90%;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
   display: flex;
   flex-direction: column;
-  position: relative;
-  margin: 0 auto;
+}
+
+.socket-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.socket-card {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: fit-content;
 }
 
 .status-bar {
@@ -33,7 +54,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  border-radius: 20px;
+  border-radius: 5px;
   background-color: #ff4444;
   color: white;
   font-size: 14px;
