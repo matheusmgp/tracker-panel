@@ -94,26 +94,21 @@
 
 .theme-toggle.dark .toggle-thumb {
   transform: translateX(30px);
+  background-color: #138d75;
 }
 
 .theme-toggle.dark .toggle-track {
-  background-color: #4dabf7;
+  background-color: #e0e0e0;
 }
 
-.sun-icon,
-.moon-icon {
-  width: 16px;
-  height: 16px;
-  fill: #666;
-  transition: fill 0.3s ease;
+.theme-toggle i {
+  font-size: 16px;
+  color: #666;
+  transition: color 0.3s ease;
 }
 
-.theme-toggle.dark .sun-icon {
-  display: none;
-}
-
-.theme-toggle:not(.dark) .moon-icon {
-  display: none;
+.theme-toggle.dark i {
+  color: #ffffff;
 }
 
 .theme-toggle:hover .toggle-thumb {
