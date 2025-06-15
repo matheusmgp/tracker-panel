@@ -19,6 +19,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  padding: 10px;
+  background-color: var(--card-background);
+  border-radius: 8px;
 }
 
 .status-indicator {
@@ -86,6 +89,34 @@
 
 .reload-button i {
   font-size: 0.9em;
+}
+
+.reload-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+}
+
+.input-container input {
+  visibility: visible;
+  padding: 8px 16px;
+  border: 2px solid #ccc;
+  border-radius: 16px;
+  font-size: 1em;
+  background-color: white;
+  color: black;
+  outline: none;
+  transition: border-color 0.2s ease;
+  min-width: 200px;
+}
+
+.input-container input:focus {
+  border-color: #2196f3;
 }
 
 .messages-container {

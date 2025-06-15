@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { SgiApiService } from '../../../services/sgi-api.service';
 
 @Component({
   selector: 'app-socket-panel',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './socket-panel.component.html',
   styleUrls: ['./socket-panel.component.css'],
 })
@@ -18,6 +19,7 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
   });
   private messagesSubject = new BehaviorSubject<TrackerMessage[]>([]);
   public selectedTrackerInfo = new BehaviorSubject<TrackerInfo | null>(null);
+  public inputValue: string = '';
 
   // Observables públicos
   public connectionStatus$ = this.connectionStatusSubject.asObservable();
@@ -25,13 +27,47 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
   public activeTab: 'suntech' | 'obd' = 'suntech';
   public selectedTrackerInfo$ = this.selectedTrackerInfo.asObservable();
 
-  // Observables filtrados para cada aba
-  public suntechMessages$ = this.messages$.pipe(
-    map((messages) => messages.filter((msg) => msg.event.startsWith('SUNTECH')))
+  // Observable para o termo de pesquisa
+  private searchTermSubject = new BehaviorSubject<string>('');
+  public searchTerm$ = this.searchTermSubject.asObservable();
+
+  // Observables filtrados para cada aba com pesquisa
+  public suntechMessages$ = combineLatest([
+    this.messages$.pipe(
+      map((messages) =>
+        messages.filter((msg) => msg.event.startsWith('SUNTECH'))
+      )
+    ),
+    this.searchTerm$,
+  ]).pipe(
+    map(([messages, searchTerm]) => {
+      if (!searchTerm) return messages;
+      const term = searchTerm.toLowerCase();
+      return messages.filter(
+        (msg) =>
+          msg.event.toLowerCase().includes(term) ||
+          msg.data.toLowerCase().includes(term) ||
+          msg.timestamp.toLowerCase().includes(term)
+      );
+    })
   );
 
-  public obdMessages$ = this.messages$.pipe(
-    map((messages) => messages.filter((msg) => msg.event.startsWith('OBD')))
+  public obdMessages$ = combineLatest([
+    this.messages$.pipe(
+      map((messages) => messages.filter((msg) => msg.event.startsWith('OBD')))
+    ),
+    this.searchTerm$,
+  ]).pipe(
+    map(([messages, searchTerm]) => {
+      if (!searchTerm) return messages;
+      const term = searchTerm.toLowerCase();
+      return messages.filter(
+        (msg) =>
+          msg.event.toLowerCase().includes(term) ||
+          msg.data.toLowerCase().includes(term) ||
+          msg.timestamp.toLowerCase().includes(term)
+      );
+    })
   );
 
   private readonly wsUrl = 'ws://localhost:3001';
@@ -206,5 +242,10 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     if (serialNumber) {
       this.getTrackerInfo(serialNumber);
     }
+  }
+
+  // Método para atualizar o termo de pesquisa
+  onSearchChange(value: string): void {
+    this.searchTermSubject.next(value);
   }
 }

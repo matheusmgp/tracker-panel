@@ -26,6 +26,14 @@
         }})
       </span>
     </span>
+    <div class="input-container">
+      <input
+        type="text"
+        [(ngModel)]="inputValue"
+        (ngModelChange)="onSearchChange($event)"
+        placeholder="Pesquisar mensagens..."
+      />
+    </div>
     <button class="reload-button" (click)="reloadPage()">
       <i class="fas fa-sync-alt"></i> Recarregar
     </button>
