@@ -79,14 +79,14 @@
   gap: 10px;
   align-items: flex-end;
   order: 2;
-  min-width: 300px;
+  min-width: 400px;
 }
 
 .status-indicator {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 10px 16px;
   border-radius: 5px;
   background-color: #ff4444;
   color: white;
@@ -96,13 +96,15 @@
   outline: none;
   overflow: hidden;
   transform: translateZ(0);
-  width: 300px;
+  width: 400px;
+  flex-wrap: wrap;
 }
 
 .status-indicator span {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.4;
 }
 
 .status-indicator.connected {
@@ -656,10 +658,12 @@
   .connection-status {
     order: 1;
     align-items: stretch;
+    min-width: 100%;
   }
 
   .status-indicator {
     width: 100%;
+    min-width: 100%;
   }
 
   .tab-header {
