@@ -5,6 +5,38 @@ import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { SgiApiService } from '../../services/sgi-api.service';
 
+interface TrackerMessage {
+  timestamp: string;
+  event: string;
+  data: string;
+}
+
+interface MappedTrackerData {
+  tipo: string;
+  serialNumber: string;
+  versao: string;
+  comando?: string;
+  estacionamento?: string;
+  speedmax?: number;
+  tipoConexao?: string;
+  zip?: string;
+  envioagrupado?: string;
+  alarmebateria?: string;
+  alarmegps?: string;
+  alarmebateriabkp?: string;
+  sensormovimento?: string;
+  ligacao?: string;
+  cercaeletronica?: string;
+  log?: string;
+}
+
+interface DisplayMessage {
+  timestamp: string;
+  event: string;
+  data: MappedTrackerData;
+  rawData: string;
+}
+
 @Component({
   selector: 'app-socket-panel',
   standalone: true,
@@ -21,7 +53,7 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
   private obdConnectionStatusSubject = new BehaviorSubject<ConnectionInfo>({
     status: false,
   });
-  private messagesSubject = new BehaviorSubject<TrackerMessage[]>([]);
+  private messagesSubject = new BehaviorSubject<DisplayMessage[]>([]);
   public selectedTrackerInfo = new BehaviorSubject<TrackerInfo | null>(null);
   public inputValue: string = '';
 
@@ -52,7 +84,7 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
       return messages.filter(
         (msg) =>
           msg.event.toLowerCase().includes(term) ||
-          msg.data.toLowerCase().includes(term) ||
+          msg.data.serialNumber.toLowerCase().includes(term) ||
           msg.timestamp.toLowerCase().includes(term)
       );
     })
@@ -70,7 +102,7 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
       return messages.filter(
         (msg) =>
           msg.event.toLowerCase().includes(term) ||
-          msg.data.toLowerCase().includes(term) ||
+          msg.data.serialNumber.toLowerCase().includes(term) ||
           msg.timestamp.toLowerCase().includes(term)
       );
     })
@@ -196,10 +228,40 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
       console.log(`📩 Dados processados (${prefix}):`, data);
 
       const currentMessages = this.messagesSubject.value;
-      const newMessage: TrackerMessage = {
+
+      // Processar os dados da string
+      const parts = data.data.split(';');
+      const mappedData: MappedTrackerData = {
+        tipo: parts[0],
+        serialNumber: parts[1],
+        versao: parts[2],
+      };
+
+      // Se for uma mensagem de comando (4 partes)
+      if (parts.length === 4) {
+        mappedData.comando = parts[3];
+      }
+      // Se for uma mensagem completa (15 partes)
+      else if (parts.length === 15) {
+        mappedData.estacionamento = parts[3];
+        mappedData.speedmax = Number(parts[4]);
+        mappedData.tipoConexao = parts[5];
+        mappedData.zip = parts[6];
+        mappedData.envioagrupado = parts[7];
+        mappedData.alarmebateria = parts[8];
+        mappedData.alarmegps = parts[9];
+        mappedData.alarmebateriabkp = parts[10];
+        mappedData.sensormovimento = parts[11];
+        mappedData.ligacao = parts[12];
+        mappedData.cercaeletronica = parts[13];
+        mappedData.log = parts[14];
+      }
+
+      const newMessage: DisplayMessage = {
         timestamp: data.timestamp,
         event: `${prefix}_${data.event}`,
-        data: data.data,
+        data: mappedData,
+        rawData: data.data,
       };
 
       console.log('📝 Nova mensagem:', newMessage);
@@ -273,8 +335,8 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     }
   }
 
-  onClickSeeInfo(message: TrackerMessage): void {
-    const serialNumber = message.data.split(';')[1];
+  onClickSeeInfo(message: DisplayMessage): void {
+    const serialNumber = message.data.serialNumber;
     if (serialNumber) {
       this.getTrackerInfo(serialNumber);
     }

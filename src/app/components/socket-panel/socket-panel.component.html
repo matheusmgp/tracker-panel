@@ -128,18 +128,104 @@
 
     <div class="tab-content">
       <div class="tab-pane" *ngIf="activeTab === 'suntech'">
-        <div class="messages-container">
-          <div *ngFor="let message of suntechMessages$ | async" class="message">
+        <div class="message-list">
+          <div
+            class="message-item"
+            *ngFor="let message of suntechMessages$ | async"
+          >
             <div class="message-header">
-              <span class="event">{{ message.event }}</span>
               <span class="timestamp">{{
                 message.timestamp | date : "dd/MM/yyyy HH:mm:ss"
               }}</span>
+              <span class="event">{{ message.event }}</span>
             </div>
-            <div class="message-data">{{ message.data }}</div>
-            <button class="info-button" (click)="onClickSeeInfo(message)">
-              <i class="fas fa-info-circle"></i> Ver informações do rastreador
-            </button>
+            <div class="message-content">
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="label">Tipo:</span>
+                  <span class="value">{{ message.data.tipo }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">Serial Number:</span>
+                  <span class="value">{{ message.data.serialNumber }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">Versão:</span>
+                  <span class="value">{{ message.data.versao }}</span>
+                </div>
+
+                <!-- Campos específicos para mensagem de comando -->
+                <ng-container *ngIf="message.data.comando">
+                  <div class="info-item">
+                    <span class="label">Comando:</span>
+                    <span class="value">{{ message.data.comando }}</span>
+                  </div>
+                </ng-container>
+
+                <!-- Campos específicos para mensagem completa -->
+                <ng-container *ngIf="message.data.estacionamento">
+                  <div class="info-item">
+                    <span class="label">Estacionamento:</span>
+                    <span class="value">{{ message.data.estacionamento }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Velocidade Máxima:</span>
+                    <span class="value">{{ message.data.speedmax }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Tipo de Conexão:</span>
+                    <span class="value">{{ message.data.tipoConexao }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">ZIP:</span>
+                    <span class="value">{{ message.data.zip }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Envio Agrupado:</span>
+                    <span class="value">{{ message.data.envioagrupado }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Alarme Bateria:</span>
+                    <span class="value">{{ message.data.alarmebateria }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Alarme GPS:</span>
+                    <span class="value">{{ message.data.alarmegps }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Alarme Bateria Backup:</span>
+                    <span class="value">{{
+                      message.data.alarmebateriabkp
+                    }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Sensor de Movimento:</span>
+                    <span class="value">{{
+                      message.data.sensormovimento
+                    }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Ligação:</span>
+                    <span class="value">{{ message.data.ligacao }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Cerca Eletrônica:</span>
+                    <span class="value">{{
+                      message.data.cercaeletronica
+                    }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Log:</span>
+                    <span class="value">{{ message.data.log }}</span>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <div class="message-actions">
+              <button class="action-button" (click)="onClickSeeInfo(message)">
+                Ver Informações
+              </button>
+            </div>
           </div>
           <div
             class="no-messages"
@@ -151,18 +237,104 @@
       </div>
 
       <div class="tab-pane" *ngIf="activeTab === 'obd'">
-        <div class="messages-container">
-          <div *ngFor="let message of obdMessages$ | async" class="message">
+        <div class="message-list">
+          <div
+            class="message-item"
+            *ngFor="let message of obdMessages$ | async"
+          >
             <div class="message-header">
-              <span class="event">{{ message.event }}</span>
               <span class="timestamp">{{
                 message.timestamp | date : "dd/MM/yyyy HH:mm:ss"
               }}</span>
+              <span class="event">{{ message.event }}</span>
             </div>
-            <div class="message-data">{{ message.data }}</div>
-            <button class="info-button" (click)="onClickSeeInfo(message)">
-              <i class="fas fa-info-circle"></i> Ver informações do rastreador
-            </button>
+            <div class="message-content">
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="label">Tipo:</span>
+                  <span class="value">{{ message.data.tipo }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">Serial Number:</span>
+                  <span class="value">{{ message.data.serialNumber }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">Versão:</span>
+                  <span class="value">{{ message.data.versao }}</span>
+                </div>
+
+                <!-- Campos específicos para mensagem de comando -->
+                <ng-container *ngIf="message.data.comando">
+                  <div class="info-item">
+                    <span class="label">Comando:</span>
+                    <span class="value">{{ message.data.comando }}</span>
+                  </div>
+                </ng-container>
+
+                <!-- Campos específicos para mensagem completa -->
+                <ng-container *ngIf="message.data.estacionamento">
+                  <div class="info-item">
+                    <span class="label">Estacionamento:</span>
+                    <span class="value">{{ message.data.estacionamento }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Velocidade Máxima:</span>
+                    <span class="value">{{ message.data.speedmax }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Tipo de Conexão:</span>
+                    <span class="value">{{ message.data.tipoConexao }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">ZIP:</span>
+                    <span class="value">{{ message.data.zip }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Envio Agrupado:</span>
+                    <span class="value">{{ message.data.envioagrupado }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Alarme Bateria:</span>
+                    <span class="value">{{ message.data.alarmebateria }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Alarme GPS:</span>
+                    <span class="value">{{ message.data.alarmegps }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Alarme Bateria Backup:</span>
+                    <span class="value">{{
+                      message.data.alarmebateriabkp
+                    }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Sensor de Movimento:</span>
+                    <span class="value">{{
+                      message.data.sensormovimento
+                    }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Ligação:</span>
+                    <span class="value">{{ message.data.ligacao }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Cerca Eletrônica:</span>
+                    <span class="value">{{
+                      message.data.cercaeletronica
+                    }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Log:</span>
+                    <span class="value">{{ message.data.log }}</span>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <div class="message-actions">
+              <button class="action-button" (click)="onClickSeeInfo(message)">
+                Ver Informações
+              </button>
+            </div>
           </div>
           <div class="no-messages" *ngIf="(obdMessages$ | async)?.length === 0">
             <p>Lista vazia</p>

@@ -101,7 +101,7 @@ func (h *Hub) broadcastToWebSocket(data string) {
 	// Formato similar ao Node.js
 	message := Message{
 		Timestamp: time.Now().Format(time.RFC3339),
-		Event:     fmt.Sprintf("%s - %s", event, serial), // Removido "OBDS"
+		Event:     fmt.Sprintf("%s - %s", event, serial),
 		Data:      data,
 	}
 
