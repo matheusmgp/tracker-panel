@@ -3,17 +3,17 @@
   /* Cores do tema claro */
   --primary-color: #2196f3;
   --secondary-color: #1976d2;
-  --background-color: #f5f5f5;
-  --card-background: #ffffff;
-  --text-color: #333333;
-  --text-secondary: #666666;
-  --border-color: #e0e0e0;
+  --background-color: #f0f2f5;
+  --card-background: #f8f9fa;
+  --text-color: #2c3e50;
+  --text-secondary: #546e7a;
+  --border-color: #e9ecef;
   --status-connected: #4caf50;
   --status-disconnected: #f44336;
-  --message-background: #ffffff;
-  --message-data-background: #f8f9fa;
-  --message-header-color: #666666;
-  --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --message-background: #f8f9fa;
+  --message-data-background: #e9ecef;
+  --message-header-color: #546e7a;
+  --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   --navbar-background: #138d75;
   --navbar-text: #ffffff;
 }
