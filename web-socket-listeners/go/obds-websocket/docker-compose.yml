@@ -1,16 +1,16 @@
 version: "3.8"
 
 services:
-  websocket-bridge:
+  websocket-obds:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: websocket-bridge
+    container_name: websocket-obds
     restart: unless-stopped
 
     ports:
-      - "3003:3003" # WebSocket port
-      - "5000:5000" # TCP port
+      - "3003:3003"
+      - "5000:5000"
 
     environment:
       - HOST=0.0.0.0
@@ -33,7 +33,6 @@ services:
       retries: 3
       start_period: 40s
 
-    # Logging configuration
     logging:
       driver: "json-file"
       options:
