@@ -109,7 +109,7 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
   );
 
   public readonly suntechWsUrl = 'ws://localhost:3001';
-  public readonly obdWsUrl = 'ws://localhost:3002';
+  public readonly obdWsUrl = 'ws://localhost:3003';
 
   private selectedWebSocketInfoSubject = new BehaviorSubject<{
     type: 'suntech' | 'obd';
