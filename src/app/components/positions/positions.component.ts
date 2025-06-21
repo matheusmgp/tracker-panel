@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { PositionsApiService } from '../../services/positions-api.service';
 import { interval, Subscription } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
@@ -75,12 +76,14 @@ interface ApiResponse {
 @Component({
   selector: 'app-positions',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './positions.component.html',
   styleUrl: './positions.component.css',
 })
 export class PositionsComponent implements OnInit, OnDestroy {
   positions: PositionData[] = [];
+  filteredPositions: PositionData[] = [];
+  searchTerm: string = '';
   loading = false;
   error: string | null = null;
   lastUpdate: string | null = null;
@@ -131,6 +134,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
     this.loading = false;
     this.error = null;
     this.positions = response.data.list;
+    this.filteredPositions = [...this.positions];
     this.lastUpdate = new Date().toLocaleTimeString('pt-BR');
   }
 
@@ -155,5 +159,44 @@ export class PositionsComponent implements OnInit, OnDestroy {
     if (speedValue === 0) return 'red';
     if (speedValue < 20) return 'orange';
     return 'green';
+  }
+
+  onSearchChange(): void {
+    this.filterPositions();
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.filterPositions();
+  }
+
+  private filterPositions(): void {
+    if (!this.searchTerm.trim()) {
+      this.filteredPositions = [...this.positions];
+      return;
+    }
+
+    const searchLower = this.searchTerm.toLowerCase().trim();
+    this.filteredPositions = this.positions.filter((position) => {
+      const board = position.jsonData.vehicledata.board?.toLowerCase() || '';
+      const description =
+        position.jsonData.vehicledata.description?.toLowerCase() || '';
+      const clientName =
+        position.jsonData.vehicledata.clientData.clientfantasy?.toLowerCase() ||
+        '';
+      const address = position.jsonData.address?.toLowerCase() || '';
+      const trackerCode = position.jsonData.trackercode?.toString() || '';
+      const equipment =
+        position.jsonData.trackerdata.equipament?.toLowerCase() || '';
+
+      return (
+        board.includes(searchLower) ||
+        description.includes(searchLower) ||
+        clientName.includes(searchLower) ||
+        address.includes(searchLower) ||
+        trackerCode.includes(searchLower) ||
+        equipment.includes(searchLower)
+      );
+    });
   }
 }

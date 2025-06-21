@@ -2,7 +2,23 @@
   <!-- Header -->
   <div class="header">
     <div class="header-content">
-      <h1>Monitoramento de Posições</h1>
+      <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Pesquisar veículos, placas, clientes..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+        />
+        <button
+          class="clear-search-btn"
+          *ngIf="searchTerm"
+          (click)="clearSearch()"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
       <button
         class="refresh-btn"
         (click)="loadPositions()"
@@ -17,9 +33,9 @@
         <i class="fas fa-clock"></i>
         Última atualização: {{ lastUpdate }}
       </div>
-      <div class="total-vehicles" *ngIf="positions.length > 0">
+      <div class="total-vehicles" *ngIf="filteredPositions.length > 0">
         <i class="fas fa-car"></i>
-        {{ positions.length }} veículos monitorados
+        {{ filteredPositions.length }} de {{ positions.length }} veículos
       </div>
     </div>
   </div>
@@ -45,9 +61,9 @@
   <!-- Positions Grid -->
   <div
     class="positions-grid"
-    *ngIf="!loading && !error && positions.length > 0"
+    *ngIf="!loading && !error && filteredPositions.length > 0"
   >
-    <div class="position-card" *ngFor="let position of positions">
+    <div class="position-card" *ngFor="let position of filteredPositions">
       <!-- Vehicle Header -->
       <div class="vehicle-header">
         <div class="vehicle-info">
@@ -150,9 +166,24 @@
   </div>
 
   <!-- Empty State -->
-  <div class="empty-state" *ngIf="!loading && !error && positions.length === 0">
-    <i class="fas fa-car"></i>
-    <h3>Nenhuma posição encontrada</h3>
-    <p>Não há veículos sendo monitorados no momento.</p>
+  <div
+    class="empty-state"
+    *ngIf="!loading && !error && filteredPositions.length === 0"
+  >
+    <i class="fas fa-search"></i>
+    <h3>
+      {{
+        searchTerm
+          ? "Nenhum resultado encontrado"
+          : "Nenhuma posição encontrada"
+      }}
+    </h3>
+    <p>
+      {{
+        searchTerm
+          ? "Tente ajustar os termos de pesquisa."
+          : "Não há veículos sendo monitorados no momento."
+      }}
+    </p>
   </div>
 </div>
