@@ -83,6 +83,7 @@ interface ApiResponse {
 export class PositionsComponent implements OnInit, OnDestroy {
   positions: PositionData[] = [];
   filteredPositions: PositionData[] = [];
+  latestPositions: PositionData[] = [];
   searchTerm: string = '';
   loading = false;
   error: string | null = null;
@@ -133,8 +134,11 @@ export class PositionsComponent implements OnInit, OnDestroy {
   private handleSuccess(response: ApiResponse): void {
     this.loading = false;
     this.error = null;
-    this.positions = response.data.list;
-    this.filteredPositions = [...this.positions];
+    this.latestPositions = response.data.list;
+    if (!this.searchTerm.trim()) {
+      this.positions = [...this.latestPositions];
+      this.filteredPositions = [...this.latestPositions];
+    }
     this.lastUpdate = new Date().toLocaleTimeString('pt-BR');
   }
 
@@ -162,41 +166,39 @@ export class PositionsComponent implements OnInit, OnDestroy {
   }
 
   onSearchChange(): void {
-    this.filterPositions();
+    if (!this.searchTerm.trim()) {
+      // Se o campo de pesquisa foi limpo, sincroniza com os dados mais recentes
+      this.positions = [...this.latestPositions];
+      this.filteredPositions = [...this.latestPositions];
+    } else {
+      // Enquanto estiver pesquisando, filtra sobre o array exibido atualmente
+      const searchLower = this.searchTerm.toLowerCase().trim();
+      this.filteredPositions = this.positions.filter((position) => {
+        const board = position.jsonData.vehicledata.board?.toLowerCase() || '';
+        const description =
+          position.jsonData.vehicledata.description?.toLowerCase() || '';
+        const clientName =
+          position.jsonData.vehicledata.clientData.clientfantasy?.toLowerCase() ||
+          '';
+        const address = position.jsonData.address?.toLowerCase() || '';
+        const trackerCode = position.jsonData.trackercode?.toString() || '';
+        const equipment =
+          position.jsonData.trackerdata.equipament?.toLowerCase() || '';
+        return (
+          board.includes(searchLower) ||
+          description.includes(searchLower) ||
+          clientName.includes(searchLower) ||
+          address.includes(searchLower) ||
+          trackerCode.includes(searchLower) ||
+          equipment.includes(searchLower)
+        );
+      });
+    }
   }
 
   clearSearch(): void {
     this.searchTerm = '';
-    this.filterPositions();
-  }
-
-  private filterPositions(): void {
-    if (!this.searchTerm.trim()) {
-      this.filteredPositions = [...this.positions];
-      return;
-    }
-
-    const searchLower = this.searchTerm.toLowerCase().trim();
-    this.filteredPositions = this.positions.filter((position) => {
-      const board = position.jsonData.vehicledata.board?.toLowerCase() || '';
-      const description =
-        position.jsonData.vehicledata.description?.toLowerCase() || '';
-      const clientName =
-        position.jsonData.vehicledata.clientData.clientfantasy?.toLowerCase() ||
-        '';
-      const address = position.jsonData.address?.toLowerCase() || '';
-      const trackerCode = position.jsonData.trackercode?.toString() || '';
-      const equipment =
-        position.jsonData.trackerdata.equipament?.toLowerCase() || '';
-
-      return (
-        board.includes(searchLower) ||
-        description.includes(searchLower) ||
-        clientName.includes(searchLower) ||
-        address.includes(searchLower) ||
-        trackerCode.includes(searchLower) ||
-        equipment.includes(searchLower)
-      );
-    });
+    this.positions = [...this.latestPositions];
+    this.filteredPositions = [...this.latestPositions];
   }
 }

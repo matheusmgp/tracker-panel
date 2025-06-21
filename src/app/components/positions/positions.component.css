@@ -9,7 +9,7 @@
 .header {
   background: #0e6655;
   color: white;
-  padding: 30px;
+  padding: 20px;
   border-radius: 15px;
   margin-bottom: 30px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -19,9 +19,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 20px;
 }
 
 .header-controls {
@@ -101,15 +99,17 @@
   background: rgba(255, 255, 255, 0.15);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 12px 20px;
+  padding: 10px 16px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .refresh-btn:hover:not(:disabled) {
@@ -128,17 +128,20 @@
 
 .status-info {
   display: flex;
-  gap: 30px;
+  gap: 15px;
   flex-wrap: wrap;
+  align-items: center;
+  font-size: 0.9rem;
 }
 
 .last-update,
 .total-vehicles {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.95rem;
+  gap: 6px;
+  font-size: 0.85rem;
   opacity: 0.9;
+  white-space: nowrap;
 }
 
 /* Loading State */
@@ -503,43 +506,33 @@
   }
 
   .header {
-    padding: 20px;
+    padding: 15px;
   }
 
   .header-content {
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
     align-items: stretch;
-  }
-
-  .header h1 {
-    font-size: 2rem;
-    text-align: center;
   }
 
   .search-container {
     min-width: auto;
+    max-width: none;
     width: 100%;
   }
 
   .search-input {
-    padding: 14px 0;
+    padding: 10px 0;
   }
 
-  .company-info {
-    align-self: center;
-    min-width: 150px;
+  .status-info {
     justify-content: center;
+    gap: 20px;
   }
 
   .refresh-btn {
     align-self: center;
     min-width: 150px;
-  }
-
-  .status-info {
-    flex-direction: column;
-    gap: 15px;
   }
 
   .positions-grid {
@@ -571,13 +564,29 @@
   }
 
   .search-input {
-    padding: 12px 0;
+    padding: 8px 0;
     font-size: 0.9rem;
   }
 
   .search-icon {
     font-size: 1rem;
     margin-right: 8px;
+  }
+
+  .status-info {
+    font-size: 0.8rem;
+    gap: 10px;
+  }
+
+  .last-update,
+  .total-vehicles {
+    font-size: 0.8rem;
+    gap: 4px;
+  }
+
+  .refresh-btn {
+    font-size: 0.85rem;
+    padding: 8px 12px;
   }
 
   .position-card {
@@ -604,7 +613,9 @@
   border-radius: 12px;
   padding: 0 16px;
   backdrop-filter: blur(10px);
-  min-width: 300px;
+  min-width: 250px;
+  max-width: 400px;
+  flex: 1;
   transition: all 0.3s ease;
 }
 
@@ -627,7 +638,7 @@
   border: none;
   color: white;
   font-size: 1rem;
-  padding: 16px 0;
+  padding: 12px 0;
   outline: none;
   font-family: inherit;
 }

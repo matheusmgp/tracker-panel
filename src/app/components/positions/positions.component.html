@@ -19,6 +19,16 @@
           <i class="fas fa-times"></i>
         </button>
       </div>
+      <div class="status-info">
+        <div class="last-update" *ngIf="lastUpdate">
+          <i class="fas fa-clock"></i>
+          Última atualização: {{ lastUpdate }}
+        </div>
+        <div class="total-vehicles" *ngIf="filteredPositions.length > 0">
+          <i class="fas fa-car"></i>
+          {{ filteredPositions.length }} de {{ positions.length }} veículos
+        </div>
+      </div>
       <button
         class="refresh-btn"
         (click)="loadPositions()"
@@ -27,16 +37,6 @@
         <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
         {{ loading ? "Atualizando..." : "Atualizar" }}
       </button>
-    </div>
-    <div class="status-info">
-      <div class="last-update" *ngIf="lastUpdate">
-        <i class="fas fa-clock"></i>
-        Última atualização: {{ lastUpdate }}
-      </div>
-      <div class="total-vehicles" *ngIf="filteredPositions.length > 0">
-        <i class="fas fa-car"></i>
-        {{ filteredPositions.length }} de {{ positions.length }} veículos
-      </div>
     </div>
   </div>
 
