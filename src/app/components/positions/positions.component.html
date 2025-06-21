@@ -230,10 +230,20 @@
             {{ getSpeedInKmh(selectedPosition?.jsonData?.speed || "0") }} km/h
           </p>
           <p>
-            <strong>Última atualização:</strong>
-            {{
-              getFormattedDateTime(selectedPosition?.jsonData?.datetime || "")
-            }}
+            <strong>Placa:</strong>
+            {{ selectedPosition?.jsonData?.vehicledata?.board }}
+          </p>
+          <p>
+            <strong>Cor:</strong>
+            {{ selectedPosition?.jsonData?.vehicledata?.color }}
+          </p>
+          <p>
+            <strong>Chassi:</strong>
+            {{ selectedPosition?.jsonData?.vehicledata?.chassis }}
+          </p>
+          <p>
+            <strong>Renavam:</strong>
+            {{ selectedPosition?.jsonData?.vehicledata?.renavam }}
           </p>
         </div>
       </div>

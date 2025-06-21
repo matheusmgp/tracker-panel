@@ -853,3 +853,34 @@
     font-size: 0.9rem;
   }
 }
+
+.vehicle-details {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 18px;
+  border-left: 4px solid #0e6655;
+}
+
+.vehicle-details h4 {
+  margin: 0 0 12px 0;
+  color: #0e6655;
+  font-size: 1.08rem;
+  font-weight: 600;
+}
+
+.vehicle-details p {
+  margin: 0 0 8px 0;
+  color: #2d3748;
+  font-size: 0.97rem;
+  line-height: 1.5;
+}
+
+.vehicle-details p:last-child {
+  margin-bottom: 0;
+}
+
+.vehicle-details strong {
+  color: #0e6655;
+  font-weight: 600;
+}

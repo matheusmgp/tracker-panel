@@ -8,7 +8,7 @@ export const routes: Routes = [
     component: SocketPanelComponent,
   },
   {
-    path: 'positions',
+    path: 'posicoes',
     component: PositionsComponent,
   },
   {
