@@ -1,13 +1,13 @@
 .positions-container {
-  padding: 20px;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 2px;
+  width: 100%;
+  max-width: none;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Header */
 .header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #0e6655;
   color: white;
   padding: 30px;
   border-radius: 15px;
@@ -20,6 +20,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .header-controls {
@@ -43,9 +45,9 @@
 }
 
 .company-select {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 8px 12px;
   border-radius: 6px;
   font-size: 0.9rem;
@@ -61,7 +63,7 @@
 .clear-filters-btn {
   background: rgba(255, 255, 255, 0.1);
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
@@ -87,18 +89,18 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 0.95rem;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .refresh-btn {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 12px 20px;
   border-radius: 8px;
   cursor: pointer;
@@ -111,7 +113,7 @@
 }
 
 .refresh-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.25);
   transform: translateY(-2px);
 }
 
@@ -153,7 +155,7 @@
   width: 50px;
   height: 50px;
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #667eea;
+  border-top: 4px solid #0e6655;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 20px;
@@ -184,6 +186,7 @@
   padding: 20px;
   border-radius: 10px;
   border: 1px solid #fed7d7;
+  border-left: 4px solid #0e6655;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
@@ -192,13 +195,14 @@
 }
 
 .retry-btn {
-  background: #667eea;
+  background: #0e6655;
   color: white;
   border: none;
   padding: 12px 24px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
+  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -206,14 +210,15 @@
 }
 
 .retry-btn:hover {
-  background: #5a67d8;
+  background: #0a4d3f;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(14, 102, 85, 0.3);
 }
 
 /* Positions Grid */
 .positions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 25px;
   margin-top: 20px;
   max-height: 70vh;
@@ -230,6 +235,7 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  margin: 1px;
 }
 
 .position-card:hover {
@@ -244,7 +250,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background: #0e6655;
 }
 
 /* Vehicle Header */
@@ -270,7 +276,7 @@
 
 .client-name {
   margin: 0;
-  color: #667eea;
+  color: #0e6655;
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -344,11 +350,11 @@
   padding: 12px;
   background: #f7fafc;
   border-radius: 8px;
-  border-left: 3px solid #667eea;
+  border-left: 3px solid #0e6655;
 }
 
 .status-item i {
-  color: #667eea;
+  color: #0e6655;
   font-size: 1.1rem;
   width: 20px;
   text-align: center;
@@ -416,7 +422,7 @@
   background: #edf2f7;
   padding: 15px;
   border-radius: 10px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #0e6655;
 }
 
 .tracker-header {
@@ -452,11 +458,12 @@
   font-size: 4rem;
   margin-bottom: 20px;
   opacity: 0.5;
+  color: #0e6655;
 }
 
 .empty-state h3 {
   margin: 0 0 10px 0;
-  color: #4a5568;
+  color: #0e6655;
 }
 
 .empty-state p {
@@ -465,6 +472,31 @@
 }
 
 /* Responsive Design */
+
+/* Large screens - 4+ columns */
+@media (min-width: 1600px) {
+  .positions-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+  }
+
+  .positions-container {
+    padding: 30px;
+  }
+
+  .header {
+    padding: 40px;
+  }
+}
+
+/* Medium-large screens - 3+ columns */
+@media (min-width: 1200px) and (max-width: 1599px) {
+  .positions-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+  }
+}
+
 @media (max-width: 768px) {
   .positions-container {
     padding: 15px;

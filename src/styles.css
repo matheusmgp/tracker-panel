@@ -52,8 +52,9 @@ body {
 .main-content {
   background-color: var(--background-color);
   min-height: calc(100vh - 80px);
-  padding: 20px;
+  padding: 0;
   transition: background-color 0.3s;
+  width: 100%;
 }
 
 /* Estilos para o painel de socket */
