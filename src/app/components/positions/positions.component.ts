@@ -92,7 +92,10 @@ export class PositionsComponent implements OnInit, OnDestroy {
   showMapModal = false;
   selectedPosition: PositionData | null = null;
   mapUrl: string | null = null;
+  quantity: number = 0;
   private subscription: Subscription = new Subscription();
+
+  private intervalTime: number = 10000;
 
   constructor(private positionsApiService: PositionsApiService) {}
 
@@ -109,7 +112,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
     this.loadPositions();
 
     // Configurar polling a cada 5 segundos
-    this.subscription = interval(5000)
+    this.subscription = interval(this.intervalTime)
       .pipe(switchMap(() => this.positionsApiService.getPositions(1)))
       .subscribe({
         next: (response: ApiResponse) => {
@@ -139,6 +142,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
     this.loading = false;
     this.error = null;
     this.latestPositions = response.data.list;
+    this.quantity = response.data.quantity || 0;
     if (!this.searchTerm.trim()) {
       this.positions = [...this.latestPositions];
       this.filteredPositions = [...this.latestPositions];

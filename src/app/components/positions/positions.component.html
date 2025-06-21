@@ -37,6 +37,10 @@
         <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
         {{ loading ? "Atualizando..." : "Atualizar" }}
       </button>
+      <span class="quantity-info">
+        <i class="fas fa-location-dot"></i>
+        {{ quantity }} posições recebidas (última meia hora)
+      </span>
     </div>
   </div>
 
@@ -71,7 +75,16 @@
       <!-- Vehicle Header -->
       <div class="vehicle-header">
         <div class="vehicle-info">
-          <h3>{{ position.jsonData.vehicledata.board }}</h3>
+          <div class="vehicle-board-row">
+            <h3>{{ position.jsonData.vehicledata.board }}</h3>
+            <span
+              class="item-quantity-badge"
+              *ngIf="position.quantity !== undefined"
+            >
+              <i class="fas fa-location-dot"></i>
+              {{ position.quantity }} posições (última meia hora)
+            </span>
+          </div>
           <p class="vehicle-description">
             {{ position.jsonData.vehicledata.description }}
           </p>
