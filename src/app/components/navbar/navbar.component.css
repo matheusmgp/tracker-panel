@@ -63,6 +63,13 @@
   transition: var(--navbar-transition);
 }
 
+.logo-top {
+  width: 150px;
+  height: auto;
+  margin: 1rem auto;
+  display: block;
+}
+
 .logo:hover .logo-icon {
   transform: scale(1.1) rotate(5deg);
 }
@@ -252,35 +259,6 @@
   margin: 0;
   font-size: 1.5rem;
   font-weight: 500;
-}
-
-.reload-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--navbar-text);
-  border: none;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--navbar-transition);
-}
-
-.reload-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
-}
-
-.reload-button i {
-  font-size: 0.9rem;
-  transition: transform 0.3s ease;
-}
-
-.reload-button:hover i {
-  transform: rotate(180deg);
 }
 
 @media (max-width: 768px) {

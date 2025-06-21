@@ -14,7 +14,8 @@ import { Observable } from 'rxjs';
 export class NavbarComponent implements OnInit {
   isDarkTheme$: Observable<boolean>;
   isMenuOpen = false;
-  logoPath = 'assets/logo.png';
+  logoPath = 'assets/logo_gota.png';
+  logoTop = 'assets/logoverde.png';
 
   constructor(private themeService: ThemeService) {
     this.isDarkTheme$ = this.themeService.isDarkTheme$;
@@ -28,9 +29,5 @@ export class NavbarComponent implements OnInit {
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
-  }
-
-  reloadPage(): void {
-    window.location.reload();
   }
 }

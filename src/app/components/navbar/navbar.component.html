@@ -20,13 +20,13 @@
       <ul class="nav-links">
         <li>
           <a routerLink="/painel" routerLinkActive="active">
-            <i class="fas fa-chart-line"></i>
+            <i class="fas fa-car"></i>
             <span>Painel</span>
           </a>
         </li>
         <li>
           <a routerLink="/posicoes" routerLinkActive="active">
-            <i class="fas fa-chart-line"></i>
+            <i class="fas fa-location-dot"></i>
             <span>Posições</span>
           </a>
         </li>
@@ -55,9 +55,6 @@
 </nav>
 
 <div class="top-bar">
-  <div class="top-bar-content">
-    <button class="reload-button" (click)="reloadPage()">
-      <i class="fas fa-sync-alt"></i> Recarregar
-    </button>
-  </div>
+  <div class="top-bar-content"></div>
+  <img [src]="logoTop" alt="Logo" class="logo-top" />
 </div>
