@@ -16,7 +16,7 @@ export class NavbarComponent implements OnInit {
   isMenuOpen = false;
   logoPath = 'assets/logo_gota.png';
   logoTop = 'assets/logoverde.png';
-  isMinimized = false;
+  isMinimized = true;
   @Output() minimizedChange = new EventEmitter<boolean>();
 
   constructor(private themeService: ThemeService) {
