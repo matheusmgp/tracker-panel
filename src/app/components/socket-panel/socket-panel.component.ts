@@ -1,41 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { SgiApiService } from '../../services/sgi-api.service';
-
-interface TrackerMessage {
-  timestamp: string;
-  event: string;
-  data: string;
-}
-
-interface MappedTrackerData {
-  tipo: string;
-  serialNumber: string;
-  versao: string;
-  comando?: string;
-  estacionamento?: string;
-  speedmax?: number;
-  tipoConexao?: string;
-  zip?: string;
-  envioagrupado?: string;
-  alarmebateria?: string;
-  alarmegps?: string;
-  alarmebateriabkp?: string;
-  sensormovimento?: string;
-  ligacao?: string;
-  cercaeletronica?: string;
-  log?: string;
-}
-
-interface DisplayMessage {
-  timestamp: string;
-  event: string;
-  data: MappedTrackerData;
-  rawData: string;
-}
+import {
+  DisplayMessage,
+  MappedTrackerData,
+} from './interfaces/socket-panel.interface';
 
 @Component({
   selector: 'app-socket-panel',
@@ -132,12 +104,12 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     this.disconnectWebSockets();
   }
 
-  connectWebSockets(): void {
+  private connectWebSockets(): void {
     this.connectSuntechWebSocket();
     this.connectObdWebSocket();
   }
 
-  connectSuntechWebSocket(): void {
+  private connectSuntechWebSocket(): void {
     if (
       this.suntechSocket &&
       this.suntechSocket.readyState === WebSocket.OPEN
@@ -182,7 +154,7 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     }
   }
 
-  connectObdWebSocket(): void {
+  private connectObdWebSocket(): void {
     if (this.obdSocket && this.obdSocket.readyState === WebSocket.OPEN) {
       console.log('WebSocket OBD já está conectado');
       return;
@@ -296,7 +268,7 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     });
   }
 
-  disconnectWebSockets(): void {
+  private disconnectWebSockets(): void {
     if (this.suntechSocket) {
       console.log('Desconectando WebSocket Suntech...');
       this.suntechSocket.close();
@@ -312,7 +284,7 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     }
   }
 
-  reloadPage(): void {
+  public reloadPage(): void {
     window.location.reload();
   }
 
@@ -335,7 +307,7 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     }
   }
 
-  onClickSeeInfo(message: DisplayMessage): void {
+  public onClickSeeInfo(message: DisplayMessage): void {
     const serialNumber = message.data.serialNumber;
     if (serialNumber) {
       this.getTrackerInfo(serialNumber);
@@ -343,16 +315,16 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
   }
 
   // Método para atualizar o termo de pesquisa
-  onSearchChange(value: string): void {
+  public onSearchChange(value: string): void {
     this.searchTermSubject.next(value);
   }
 
-  clearSearch(): void {
+  public clearSearch(): void {
     this.inputValue = '';
     this.searchTermSubject.next('');
   }
 
-  showWebSocketInfo(type: 'suntech' | 'obd'): void {
+  public showWebSocketInfo(type: 'suntech' | 'obd'): void {
     const status =
       type === 'suntech'
         ? this.suntechConnectionStatusSubject.value
@@ -366,7 +338,7 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     });
   }
 
-  closeWebSocketInfo(): void {
+  public closeWebSocketInfo(): void {
     this.selectedWebSocketInfoSubject.next(null);
   }
 }

@@ -12,7 +12,7 @@ export class PositionsApiService extends BaseApiService {
     super(http, environment.positionsURL);
   }
 
-  getPositions(companyId?: number): Observable<any> {
+  getPositions(): Observable<any> {
     const params = new HttpParams()
       .set('current_page', '1')
       .set('per_page', '9999');

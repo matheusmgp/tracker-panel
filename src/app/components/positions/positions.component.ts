@@ -3,76 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PositionsApiService } from '../../services/positions-api.service';
 import { SafePipe } from './safe.pipe';
-import { interval, Subscription } from 'rxjs';
+import { interval, Subscription, timer } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-
-interface PositionData {
-  id: number;
-  vehicleId: number;
-  companyId: number;
-  sectorId: number | null;
-  clientId: number | null;
-  jsonData: {
-    gps: string;
-    mode: string;
-    type: string;
-    curse: string;
-    speed: string;
-    address: string;
-    voltage: string;
-    datetime: string;
-    latitude: string;
-    odometer: string;
-    sectorId: number;
-    hourmeter: string;
-    longitude: string;
-    messagenum: string;
-    satellites: string;
-    voltagebkp: string;
-    messagetype: string;
-    trackercode: number;
-    trackerdata: {
-      code: number;
-      equipament: string;
-    };
-    vehiclecode: number;
-    vehicledata: {
-      id: number;
-      board: string;
-      color: string;
-      chassis: string;
-      renavam: string;
-      modelYear: string;
-      clientData: {
-        companyid: number;
-        clientcode: number;
-        clientfantasy: string;
-      };
-      description: string;
-      vehicleType: string;
-    };
-    inputsoutputs: string;
-    localizationcode: string;
-  };
-  createdAt: string;
-  updatedAt: string;
-  quantity: number;
-}
-
-interface ApiResponse {
-  success: boolean;
-  statusCode: number;
-  data: {
-    count: number;
-    pages: number;
-    current_page: number;
-    list: PositionData[];
-    quantity: number;
-  };
-  timestamp: string;
-  method: string;
-}
+import { ApiResponse, PositionData } from './interfaces/positions.interfaces';
 
 @Component({
   selector: 'app-positions',
@@ -93,7 +27,9 @@ export class PositionsComponent implements OnInit, OnDestroy {
   selectedPosition: PositionData | null = null;
   mapUrl: string | null = null;
   quantity: number = 0;
+  countdown: number = 0;
   private subscription: Subscription = new Subscription();
+  private countdownSubscription: Subscription = new Subscription();
 
   private intervalTime: number = 10000;
 
@@ -105,37 +41,44 @@ export class PositionsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.countdownSubscription.unsubscribe();
   }
 
   private startPolling(): void {
-    // Carregar dados imediatamente
-    this.loadPositions();
+    this.subscription.unsubscribe();
+    this.countdownSubscription.unsubscribe();
 
-    // Configurar polling a cada 5 segundos
-    this.subscription = interval(this.intervalTime)
-      .pipe(switchMap(() => this.positionsApiService.getPositions(1)))
-      .subscribe({
-        next: (response: ApiResponse) => {
-          this.handleSuccess(response);
-        },
-        error: (error) => {
+    this.subscription = timer(0, this.intervalTime)
+      .pipe(
+        switchMap(() => {
+          this.loading = true;
+          return this.positionsApiService.getPositions();
+        }),
+        catchError((error) => {
           this.handleError(error);
-        },
+          return of(null);
+        })
+      )
+      .subscribe((response: ApiResponse | null) => {
+        if (response) {
+          this.handleSuccess(response);
+        }
+        this.resetCountdown();
       });
   }
 
-  loadPositions(): void {
-    this.loading = true;
-    this.error = null;
-
-    this.positionsApiService.getPositions(1).subscribe({
-      next: (response: ApiResponse) => {
-        this.handleSuccess(response);
-      },
-      error: (error) => {
-        this.handleError(error);
-      },
+  private resetCountdown(): void {
+    this.countdownSubscription.unsubscribe();
+    this.countdown = this.intervalTime / 1000;
+    this.countdownSubscription = interval(1000).subscribe(() => {
+      if (this.countdown > 0) {
+        this.countdown--;
+      }
     });
+  }
+
+  public loadPositions(): void {
+    this.startPolling();
   }
 
   private handleSuccess(response: ApiResponse): void {
@@ -156,24 +99,16 @@ export class PositionsComponent implements OnInit, OnDestroy {
     console.error('Erro ao carregar posições:', error);
   }
 
-  getSpeedInKmh(speed: string): string {
+  public getSpeedInKmh(speed: string): string {
     const speedValue = parseFloat(speed);
     return isNaN(speedValue) ? '0' : speedValue.toFixed(1);
   }
 
-  getFormattedDateTime(dateTime: string): string {
+  public getFormattedDateTime(dateTime: string): string {
     return new Date(dateTime).toLocaleString('pt-BR');
   }
 
-  getStatusColor(speed: string): string {
-    const speedValue = parseFloat(speed);
-    if (isNaN(speedValue)) return 'gray';
-    if (speedValue === 0) return 'red';
-    if (speedValue < 20) return 'orange';
-    return 'green';
-  }
-
-  onSearchChange(): void {
+  public onSearchChange(): void {
     if (!this.searchTerm.trim()) {
       // Se o campo de pesquisa foi limpo, sincroniza com os dados mais recentes
       this.positions = [...this.latestPositions];
@@ -205,13 +140,13 @@ export class PositionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  clearSearch(): void {
+  public clearSearch(): void {
     this.searchTerm = '';
     this.positions = [...this.latestPositions];
     this.filteredPositions = [...this.latestPositions];
   }
 
-  openMapModal(position: PositionData): void {
+  public openMapModal(position: PositionData): void {
     const lat = position?.jsonData?.latitude;
     const lon = position?.jsonData?.longitude;
 
@@ -224,7 +159,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  closeMapModal(): void {
+  public closeMapModal(): void {
     this.showMapModal = false;
     this.selectedPosition = null;
     this.mapUrl = null;

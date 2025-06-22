@@ -35,7 +35,11 @@
         [disabled]="loading"
       >
         <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
-        {{ loading ? "Atualizando..." : "Atualizar" }}
+        {{
+          loading
+            ? "Atualizando..."
+            : "Atualizar " + (countdown > 0 ? "(" + countdown + "s)" : "")
+        }}
       </button>
       <span class="quantity-info">
         <i class="fas fa-location-dot"></i>
