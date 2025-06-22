@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  Inject,
+  PLATFORM_ID,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, combineLatest } from 'rxjs';
@@ -8,6 +14,7 @@ import {
   DisplayMessage,
   MappedTrackerData,
 } from './interfaces/socket-panel.interface';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-socket-panel',
@@ -92,11 +99,16 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
 
   selectedWebSocketInfo$ = this.selectedWebSocketInfoSubject.asObservable();
 
-  constructor(private sgiApiService: SgiApiService) {}
+  constructor(
+    private sgiApiService: SgiApiService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngOnInit() {
-    console.log('Iniciando componente SocketPanel...');
-    this.connectWebSockets();
+    if (isPlatformBrowser(this.platformId)) {
+      console.log('Iniciando componente SocketPanel...');
+      this.connectWebSockets();
+    }
   }
 
   ngOnDestroy() {

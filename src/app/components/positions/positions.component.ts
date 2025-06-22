@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  Inject,
+  PLATFORM_ID,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PositionsApiService } from '../../services/positions-api.service';
@@ -7,6 +13,7 @@ import { interval, Subscription, timer } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ApiResponse, PositionData } from './interfaces/positions.interfaces';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-positions',
@@ -32,11 +39,19 @@ export class PositionsComponent implements OnInit, OnDestroy {
   private countdownSubscription: Subscription = new Subscription();
 
   private intervalTime: number = 10000;
+  public isBrowser: boolean;
 
-  constructor(private positionsApiService: PositionsApiService) {}
+  constructor(
+    private positionsApiService: PositionsApiService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   ngOnInit(): void {
-    this.startPolling();
+    if (this.isBrowser) {
+      this.startPolling();
+    }
   }
 
   ngOnDestroy(): void {
