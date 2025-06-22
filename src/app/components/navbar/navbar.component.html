@@ -1,9 +1,15 @@
-<nav class="navbar" [class.menu-open]="isMenuOpen">
+<nav
+  class="navbar"
+  [class.menu-open]="isMenuOpen"
+  [class.minimized]="isMinimized"
+>
   <div class="navbar-container">
     <div class="navbar-brand">
       <a routerLink="/" class="logo">
         <img [src]="logoPath" alt="Logo" class="logo-icon" />
-        <span class="brand-text">Painel dos rastreadores</span>
+        <span class="brand-text" *ngIf="!isMinimized"
+          >Painel dos rastreadores</span
+        >
       </a>
       <button
         class="menu-toggle"
@@ -14,6 +20,17 @@
         <span></span>
         <span></span>
       </button>
+      <button
+        class="minimize-toggle"
+        (click)="toggleMinimize()"
+        [attr.aria-label]="isMinimized ? 'Expandir menu' : 'Minimizar menu'"
+      >
+        <i
+          class="fas"
+          [class.fa-angle-double-left]="!isMinimized"
+          [class.fa-angle-double-right]="isMinimized"
+        ></i>
+      </button>
     </div>
 
     <div class="navbar-menu" [class.active]="isMenuOpen">
@@ -21,13 +38,13 @@
         <li>
           <a routerLink="/painel" routerLinkActive="active">
             <i class="fas fa-car"></i>
-            <span>Painel</span>
+            <span *ngIf="!isMinimized">Painel</span>
           </a>
         </li>
         <li>
           <a routerLink="/posicoes" routerLinkActive="active">
             <i class="fas fa-location-dot"></i>
-            <span>Posições</span>
+            <span *ngIf="!isMinimized">Posições</span>
           </a>
         </li>
       </ul>
@@ -42,11 +59,8 @@
       >
         <div class="toggle-track">
           <div class="toggle-thumb">
-            <i
-              class="fas"
-              [class.fa-sun]="!(isDarkTheme$ | async)"
-              [class.fa-moon]="isDarkTheme$ | async"
-            ></i>
+            <i class="fas fa-sun theme-icon-sun"></i>
+            <i class="fas fa-moon theme-icon-moon"></i>
           </div>
         </div>
       </button>
@@ -54,7 +68,7 @@
   </div>
 </nav>
 
-<div class="top-bar">
+<div class="top-bar" [class.minimized]="isMinimized">
   <div class="top-bar-content"></div>
-  <img [src]="logoTop" alt="Logo" class="logo-top" />
+  <img [src]="logoTop" alt="Logo" class="logo-top" *ngIf="!isMinimized" />
 </div>

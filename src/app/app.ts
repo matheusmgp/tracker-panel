@@ -12,4 +12,5 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 })
 export class App {
   protected title = 'tracker-panel';
+  navbarMinimized = false;
 }

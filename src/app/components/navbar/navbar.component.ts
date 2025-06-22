@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
@@ -16,6 +16,8 @@ export class NavbarComponent implements OnInit {
   isMenuOpen = false;
   logoPath = 'assets/logo_gota.png';
   logoTop = 'assets/logoverde.png';
+  isMinimized = false;
+  @Output() minimizedChange = new EventEmitter<boolean>();
 
   constructor(private themeService: ThemeService) {
     this.isDarkTheme$ = this.themeService.isDarkTheme$;
@@ -29,5 +31,10 @@ export class NavbarComponent implements OnInit {
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  toggleMinimize(): void {
+    this.isMinimized = !this.isMinimized;
+    this.minimizedChange.emit(this.isMinimized);
   }
 }

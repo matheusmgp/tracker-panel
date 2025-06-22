@@ -177,8 +177,8 @@
   }
 </style>
 
-<app-navbar></app-navbar>
-<main class="main-content">
+<app-navbar (minimizedChange)="navbarMinimized = $event"></app-navbar>
+<main class="main-content" [class.navbar-minimized]="navbarMinimized">
   <router-outlet></router-outlet>
 </main>
 

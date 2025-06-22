@@ -24,6 +24,11 @@
   width: calc(100% - 280px);
 }
 
+.main-content.navbar-minimized {
+  margin-left: 70px;
+  width: calc(100% - 70px);
+}
+
 @media (max-width: 768px) {
   .container {
     margin-left: 0;
