@@ -177,10 +177,15 @@
   }
 </style>
 
-<app-navbar (minimizedChange)="navbarMinimized = $event"></app-navbar>
-<main class="main-content" [class.navbar-minimized]="navbarMinimized">
-  <router-outlet></router-outlet>
-</main>
+<ng-container *ngIf="isLoggedIn; else login">
+  <app-navbar (minimizedChange)="navbarMinimized = $event"></app-navbar>
+  <main class="main-content" [class.navbar-minimized]="navbarMinimized">
+    <router-outlet></router-outlet>
+  </main>
+</ng-container>
+<ng-template #login>
+  <app-login></app-login>
+</ng-template>
 
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * * The content above * * * * * * * * * * * * -->
