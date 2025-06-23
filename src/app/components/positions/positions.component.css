@@ -1,5 +1,5 @@
 .positions-container {
-  padding: 2px;
+  padding: 0;
   width: 100%;
   max-width: none;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -191,6 +191,8 @@
   max-height: 70vh;
   overflow-y: auto;
   padding-right: 10px;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .position-card {

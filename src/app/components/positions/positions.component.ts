@@ -40,12 +40,14 @@ export class PositionsComponent implements OnInit, OnDestroy {
 
   private intervalTime: number = 10000;
   public isBrowser: boolean;
+  public intervalTimeSeconds: number = 10;
 
   constructor(
     private positionsApiService: PositionsApiService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+    this.intervalTimeSeconds = this.intervalTime / 1000;
   }
 
   ngOnInit(): void {
@@ -178,5 +180,13 @@ export class PositionsComponent implements OnInit, OnDestroy {
     this.showMapModal = false;
     this.selectedPosition = null;
     this.mapUrl = null;
+  }
+
+  public onIntervalChange(): void {
+    if (this.intervalTimeSeconds < 2) {
+      this.intervalTimeSeconds = 2;
+    }
+    this.intervalTime = this.intervalTimeSeconds * 1000;
+    this.startPolling();
   }
 }

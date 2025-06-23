@@ -41,6 +41,25 @@
             : "Atualizar " + (countdown > 0 ? "(" + countdown + "s)" : "")
         }}
       </button>
+      <div style="display: flex; align-items: center; gap: 8px">
+        <label for="intervalInput" style="font-size: 0.95rem; color: white"
+          >Intervalo:</label
+        >
+        <input
+          id="intervalInput"
+          type="number"
+          min="2"
+          style="
+            width: 60px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            padding: 4px 6px;
+          "
+          [(ngModel)]="intervalTimeSeconds"
+          (change)="onIntervalChange()"
+        />
+        <span style="color: white; font-size: 0.95rem">s</span>
+      </div>
       <span class="quantity-info">
         <i class="fas fa-location-dot"></i>
         {{ quantity }} posições recebidas (última meia hora)

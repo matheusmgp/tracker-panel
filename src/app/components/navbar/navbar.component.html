@@ -20,17 +20,6 @@
         <span></span>
         <span></span>
       </button>
-      <button
-        class="minimize-toggle"
-        (click)="toggleMinimize()"
-        [attr.aria-label]="isMinimized ? 'Expandir menu' : 'Minimizar menu'"
-      >
-        <i
-          class="fas"
-          [class.fa-angle-double-left]="!isMinimized"
-          [class.fa-angle-double-right]="isMinimized"
-        ></i>
-      </button>
     </div>
 
     <div class="navbar-menu" [class.active]="isMenuOpen">

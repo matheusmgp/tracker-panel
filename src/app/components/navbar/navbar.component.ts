@@ -16,7 +16,7 @@ export class NavbarComponent implements OnInit {
   isMenuOpen = false;
   logoPath = 'assets/logo_gota.png';
   logoTop = 'assets/logoverde.png';
-  isMinimized = false;
+  isMinimized = true;
   @Output() minimizedChange = new EventEmitter<boolean>();
 
   constructor(private themeService: ThemeService, private router: Router) {
@@ -34,7 +34,7 @@ export class NavbarComponent implements OnInit {
   }
 
   toggleMinimize(): void {
-    this.isMinimized = !this.isMinimized;
+    this.isMinimized = true;
     this.minimizedChange.emit(this.isMinimized);
   }
 

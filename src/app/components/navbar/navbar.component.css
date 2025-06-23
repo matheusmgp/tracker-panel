@@ -407,21 +407,18 @@
 }
 
 .navbar.minimized {
-  width: 70px;
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  transition: var(--navbar-transition);
 }
 
 .navbar.minimized .brand-text,
 .navbar.minimized .logo-top,
-.navbar.minimized .nav-links span {
-  display: none !important;
-}
-
-.navbar.minimized .logo {
-  justify-content: center;
-}
-
-.navbar.minimized .logo-icon {
-  margin: 0 auto;
+.navbar.minimized .nav-links span,
+.navbar.minimized .logout-btn span,
+.navbar.minimized .top-bar-content span {
+  display: none;
 }
 
 .navbar.minimized .nav-links a {
@@ -429,8 +426,21 @@
   padding: 1rem 0.5rem;
 }
 
-.navbar.minimized .nav-links i {
-  margin: 0 auto;
+.navbar.minimized .nav-links a:hover span {
+  display: inline;
+  position: absolute;
+  left: 70px;
+  background: var(--navbar-background);
+  color: var(--navbar-text);
+  padding: 6px 16px;
+  border-radius: 8px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+}
+
+.navbar.minimized .nav-links a span {
+  display: none;
 }
 
 .minimize-toggle {
