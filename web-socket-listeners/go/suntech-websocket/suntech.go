@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -9,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -18,13 +20,23 @@ import (
 const (
 	TCP_PORT = 5000
 	WS_PORT  = 3001
-	HOST     = "0.0.0.0"  // Host para escutar WebSocket
+	HOST     = "0.0.0.0"
+
+	// Configurações de reconexão
+	MAX_RECONNECT_ATTEMPTS = 5
+	INITIAL_RECONNECT_DELAY = 5 * time.Second
+	MAX_RECONNECT_DELAY     = 60 * time.Second
+	CONNECTION_TIMEOUT      = 30 * time.Second
+	READ_TIMEOUT           = 30 * time.Second
+	WRITE_TIMEOUT          = 10 * time.Second
+	PING_INTERVAL          = 30 * time.Second
 )
 
 type Message struct {
 	Timestamp string `json:"timestamp"`
 	Event     string `json:"event"`
 	Data      string `json:"data"`
+	Status    string `json:"status,omitempty"`
 }
 
 type Hub struct {
@@ -32,6 +44,17 @@ type Hub struct {
 	broadcast  chan []byte
 	register   chan *websocket.Conn
 	unregister chan *websocket.Conn
+	mu         sync.RWMutex
+	tcpConnected bool
+}
+
+type TCPClient struct {
+	hub           *Hub
+	conn          net.Conn
+	reconnectAttempts int
+	ctx           context.Context
+	cancel        context.CancelFunc
+	mu            sync.Mutex
 }
 
 var upgrader = websocket.Upgrader{
@@ -39,6 +62,8 @@ var upgrader = websocket.Upgrader{
 		return true
 	},
 	HandshakeTimeout: 45 * time.Second,
+	ReadBufferSize:   1024,
+	WriteBufferSize:  1024,
 }
 
 func newHub() *Hub {
@@ -47,6 +72,7 @@ func newHub() *Hub {
 		broadcast:  make(chan []byte, 256),
 		register:   make(chan *websocket.Conn),
 		unregister: make(chan *websocket.Conn),
+		tcpConnected: false,
 	}
 }
 
@@ -54,34 +80,96 @@ func (h *Hub) run() {
 	for {
 		select {
 		case client := <-h.register:
+			h.mu.Lock()
 			h.clients[client] = true
-			fmt.Printf("✅ Cliente WebSocket conectado. Total: %d\n", len(h.clients))
+			clientCount := len(h.clients)
+			h.mu.Unlock()
+
+			fmt.Printf("✅ Cliente WebSocket conectado. Total: %d\n", clientCount)
+
+			// Enviar status de conexão TCP para o novo cliente
+			h.sendConnectionStatus(client)
 
 		case client := <-h.unregister:
+			h.mu.Lock()
 			if _, ok := h.clients[client]; ok {
 				delete(h.clients, client)
 				client.Close()
-				fmt.Printf("❌ Cliente WebSocket desconectado. Total: %d\n", len(h.clients))
 			}
+			clientCount := len(h.clients)
+			h.mu.Unlock()
+
+			fmt.Printf("❌ Cliente WebSocket desconectado. Total: %d\n", clientCount)
 
 		case message := <-h.broadcast:
+			h.mu.RLock()
+			clients := make([]*websocket.Conn, 0, len(h.clients))
 			for client := range h.clients {
-				select {
-				case <-time.After(10 * time.Second):
-					fmt.Println("⚠️ Timeout ao enviar mensagem para cliente")
-					delete(h.clients, client)
-					client.Close()
-				default:
-					client.SetWriteDeadline(time.Now().Add(10 * time.Second))
-					err := client.WriteMessage(websocket.TextMessage, message)
-					if err != nil {
-						fmt.Printf("❌ Erro ao enviar mensagem: %v\n", err)
-						delete(h.clients, client)
-						client.Close()
-					}
-				}
+				clients = append(clients, client)
+			}
+			h.mu.RUnlock()
+
+			// Enviar mensagem para todos os clientes
+			for _, client := range clients {
+				go h.sendToClient(client, message)
 			}
 		}
+	}
+}
+
+func (h *Hub) sendToClient(client *websocket.Conn, message []byte) {
+	client.SetWriteDeadline(time.Now().Add(WRITE_TIMEOUT))
+	err := client.WriteMessage(websocket.TextMessage, message)
+	if err != nil {
+		fmt.Printf("❌ Erro ao enviar mensagem para cliente: %v\n", err)
+		h.unregister <- client
+	}
+}
+
+func (h *Hub) sendConnectionStatus(client *websocket.Conn) {
+	h.mu.RLock()
+	connected := h.tcpConnected
+	h.mu.RUnlock()
+
+	status := "disconnected"
+	if connected {
+		status = "connected"
+	}
+
+	message := Message{
+		Timestamp: time.Now().Format(time.RFC3339),
+		Event:     "tcp_status",
+		Data:      fmt.Sprintf("TCP connection status: %s", status),
+		Status:    status,
+	}
+
+	jsonData, _ := json.Marshal(message)
+	go h.sendToClient(client, jsonData)
+}
+
+func (h *Hub) broadcastConnectionStatus(connected bool) {
+	h.mu.Lock()
+	h.tcpConnected = connected
+	h.mu.Unlock()
+
+	status := "disconnected"
+	if connected {
+		status = "connected"
+	}
+
+	message := Message{
+		Timestamp: time.Now().Format(time.RFC3339),
+		Event:     "tcp_status",
+		Data:      fmt.Sprintf("TCP connection status: %s", status),
+		Status:    status,
+	}
+
+	jsonData, _ := json.Marshal(message)
+
+	select {
+	case h.broadcast <- jsonData:
+	default:
+		fmt.Println("⚠️ Canal de broadcast cheio para status de conexão")
 	}
 }
 
@@ -101,8 +189,9 @@ func (h *Hub) broadcastToWebSocket(data string) {
 		Timestamp: time.Now().Format(time.RFC3339),
 		Event:     fmt.Sprintf("%s - %s", event, serial),
 		Data:      data,
+		Status:    "data",
 	}
-	fmt.Println("Mensagem chegando suntech")
+
 	jsonData, err := json.Marshal(message)
 	if err != nil {
 		log.Printf("❌ Erro ao serializar JSON: %v", err)
@@ -126,37 +215,28 @@ func (h *Hub) handleWebSocket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Configurar timeouts iniciais
-	conn.SetReadDeadline(time.Now().Add(10 * time.Second))
-	conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
-
-	// Configurar tamanho do buffer de leitura
-	conn.SetReadLimit(512 * 1024) // 512KB
-
+	conn.SetReadLimit(512 * 1024)
 	h.register <- conn
 
-
-	// Goroutine para gerenciar a conexão
 	go func() {
 		defer func() {
 			h.unregister <- conn
 		}()
 
-		// Configurar handler de pong
 		conn.SetPongHandler(func(string) error {
-			conn.SetReadDeadline(time.Now().Add(10 * time.Second))
+			conn.SetReadDeadline(time.Now().Add(READ_TIMEOUT))
 			return nil
 		})
 
-		// Goroutine para ping periódico
-		pingTicker := time.NewTicker(5 * time.Second)
+		// Ping periódico
+		pingTicker := time.NewTicker(PING_INTERVAL)
 		defer pingTicker.Stop()
 
 		go func() {
 			for {
 				select {
 				case <-pingTicker.C:
-					conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+					conn.SetWriteDeadline(time.Now().Add(WRITE_TIMEOUT))
 					if err := conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 						return
 					}
@@ -164,9 +244,9 @@ func (h *Hub) handleWebSocket(w http.ResponseWriter, r *http.Request) {
 			}
 		}()
 
-		// Loop principal de leitura
+		// Loop de leitura
 		for {
-			conn.SetReadDeadline(time.Now().Add(10 * time.Second))
+			conn.SetReadDeadline(time.Now().Add(READ_TIMEOUT))
 			_, _, err := conn.ReadMessage()
 			if err != nil {
 				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
@@ -180,46 +260,146 @@ func (h *Hub) handleWebSocket(w http.ResponseWriter, r *http.Request) {
 	}()
 }
 
-func connectToTCPServer(hub *Hub) {
+func newTCPClient(hub *Hub) *TCPClient {
+	ctx, cancel := context.WithCancel(context.Background())
+	return &TCPClient{
+		hub:    hub,
+		ctx:    ctx,
+		cancel: cancel,
+	}
+}
+
+func (tc *TCPClient) connect() error {
+	tc.mu.Lock()
+	defer tc.mu.Unlock()
+
 	tcpHost := os.Getenv("HOST")
 	if tcpHost == "" {
 		tcpHost = HOST
 	}
 
-	fmt.Printf("🔌 Tentando conectar ao servidor TCP %s:%d...\n", tcpHost, TCP_PORT)
+	address := fmt.Sprintf("%s:%d", tcpHost, TCP_PORT)
+	fmt.Printf("🔌 Tentando conectar ao servidor TCP %s...\n", address)
 
-	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", tcpHost, TCP_PORT))
-	if err != nil {
-		log.Printf("❌ Erro na conexão TCP: %v", err)
-		return
+	// Criar conexão com timeout
+	dialer := &net.Dialer{
+		Timeout: CONNECTION_TIMEOUT,
 	}
 
-	fmt.Println("✅ Conectado ao servidor TCP. Aguardando mensagens...")
+	conn, err := dialer.DialContext(tc.ctx, "tcp", address)
+	if err != nil {
+		return fmt.Errorf("erro na conexão TCP: %v", err)
+	}
 
-	conn.SetReadDeadline(time.Now().Add(10 * time.Second))
+	tc.conn = conn
+	tc.reconnectAttempts = 0
+	fmt.Println("✅ Conectado ao servidor TCP")
 
+	// Notificar clientes WebSocket sobre a conexão
+	tc.hub.broadcastConnectionStatus(true)
+
+	return nil
+}
+
+func (tc *TCPClient) disconnect() {
+	tc.mu.Lock()
+	defer tc.mu.Unlock()
+
+	if tc.conn != nil {
+		tc.conn.Close()
+		tc.conn = nil
+		fmt.Println("🔌 Desconectado do servidor TCP")
+		tc.hub.broadcastConnectionStatus(false)
+	}
+}
+
+func (tc *TCPClient) readLoop() {
 	buffer := make([]byte, 1024)
 
 	for {
-		conn.SetReadDeadline(time.Now().Add(10 * time.Second))
+		select {
+		case <-tc.ctx.Done():
+			return
+		default:
+		}
+
+		tc.mu.Lock()
+		conn := tc.conn
+		tc.mu.Unlock()
+
+		if conn == nil {
+			return
+		}
+
+		conn.SetReadDeadline(time.Now().Add(READ_TIMEOUT))
 		n, err := conn.Read(buffer)
 		if err != nil {
 			if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
 				continue
 			}
 			log.Printf("❌ Erro ao ler dados TCP: %v", err)
-			break
+			return
 		}
 
 		dataStr := strings.TrimSpace(string(buffer[:n]))
 		if dataStr != "" {
 			fmt.Printf("📩 Dados recebidos do TCP: %s\n", dataStr)
-			hub.broadcastToWebSocket(dataStr)
+			tc.hub.broadcastToWebSocket(dataStr)
 		}
 	}
+}
 
-	conn.Close()
-	fmt.Println("🔌 Conexão TCP encerrada.")
+func (tc *TCPClient) runWithReconnect() {
+	for {
+		select {
+		case <-tc.ctx.Done():
+			return
+		default:
+		}
+
+		// Tentar conectar
+		err := tc.connect()
+		if err != nil {
+			log.Printf("❌ %v", err)
+			tc.handleReconnect()
+			continue
+		}
+
+		// Executar loop de leitura
+		tc.readLoop()
+
+		// Desconectar e tentar reconectar
+		tc.disconnect()
+		tc.handleReconnect()
+	}
+}
+
+func (tc *TCPClient) handleReconnect() {
+	tc.reconnectAttempts++
+
+	if tc.reconnectAttempts > MAX_RECONNECT_ATTEMPTS {
+		fmt.Printf("❌ Máximo de tentativas de reconexão atingido (%d). Resetando contador.\n", MAX_RECONNECT_ATTEMPTS)
+		tc.reconnectAttempts = 0
+	}
+
+	// Calcular delay exponencial
+	delay := INITIAL_RECONNECT_DELAY * time.Duration(tc.reconnectAttempts)
+	if delay > MAX_RECONNECT_DELAY {
+		delay = MAX_RECONNECT_DELAY
+	}
+
+	fmt.Printf("🔄 Tentativa de reconexão %d em %v...\n", tc.reconnectAttempts, delay)
+
+	select {
+	case <-time.After(delay):
+	case <-tc.ctx.Done():
+		return
+	}
+}
+
+func (tc *TCPClient) stop() {
+	tc.cancel()
+	tc.disconnect()
 }
 
 func main() {
@@ -228,6 +408,11 @@ func main() {
 	hub := newHub()
 	go hub.run()
 
+	// Cliente TCP com reconexão automática
+	tcpClient := newTCPClient(hub)
+	go tcpClient.runWithReconnect()
+
+	// Configurar rotas HTTP
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
@@ -241,32 +426,73 @@ func main() {
 		hub.handleWebSocket(w, r)
 	})
 
+	// Health check endpoint
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
+
+		hub.mu.RLock()
+		clientCount := len(hub.clients)
+		tcpConnected := hub.tcpConnected
+		hub.mu.RUnlock()
+
 		response := map[string]interface{}{
-			"status":     "ok",
-			"timestamp":  time.Now().Format(time.RFC3339),
-			"clients":    len(hub.clients),
-			"tcp_port":   TCP_PORT,
-			"ws_port":    WS_PORT,
+			"status":       "ok",
+			"timestamp":    time.Now().Format(time.RFC3339),
+			"clients":      clientCount,
+			"tcp_port":     TCP_PORT,
+			"ws_port":      WS_PORT,
+			"tcp_connected": tcpConnected,
 		}
 		json.NewEncoder(w).Encode(response)
 	})
 
+	// Status endpoint detalhado
+	http.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		hub.mu.RLock()
+		clientCount := len(hub.clients)
+		tcpConnected := hub.tcpConnected
+		hub.mu.RUnlock()
+
+		response := map[string]interface{}{
+			"service":      "WebSocket Bridge",
+			"version":      "2.0",
+			"status":       "running",
+			"timestamp":    time.Now().Format(time.RFC3339),
+			"websocket": map[string]interface{}{
+				"port":    WS_PORT,
+				"clients": clientCount,
+				"url":     fmt.Sprintf("ws://%s:%d", HOST, WS_PORT),
+			},
+			"tcp": map[string]interface{}{
+				"host":      HOST,
+				"port":      TCP_PORT,
+				"connected": tcpConnected,
+			},
+		}
+		json.NewEncoder(w).Encode(response)
+	})
+
+	// Iniciar servidor WebSocket
 	go func() {
 		fmt.Printf("🚀 Servidor WebSocket iniciado na porta %d\n", WS_PORT)
 		fmt.Printf("🔗 WebSocket URL: ws://%s:%d\n", HOST, WS_PORT)
 		fmt.Printf("🏥 Health check: http://%s:%d/health\n", HOST, WS_PORT)
+		fmt.Printf("📊 Status: http://%s:%d/status\n", HOST, WS_PORT)
 		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", WS_PORT), nil))
 	}()
 
-	go connectToTCPServer(hub)
-
+	// Aguardar sinal de interrupção
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 
 	fmt.Println("✅ Servidor iniciado. Pressione Ctrl+C para parar.")
 	<-c
 	fmt.Println("\n⏹️ Parando o servidor...")
+
+	// Cleanup
+	tcpClient.stop()
+
 	os.Exit(0)
 }
