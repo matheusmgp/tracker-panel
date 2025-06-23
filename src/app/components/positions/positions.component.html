@@ -90,23 +90,27 @@
     class="positions-grid"
     *ngIf="!loading && !error && filteredPositions.length > 0"
   >
-    <div
-      class="position-card"
-      *ngFor="let position of filteredPositions"
-      (click)="openMapModal(position)"
-    >
+    <div class="position-card" *ngFor="let position of filteredPositions">
       <!-- Vehicle Header -->
       <div class="vehicle-header">
         <div class="vehicle-info">
           <div class="vehicle-board-row">
-            <h3>{{ position.jsonData.vehicledata.board }}</h3>
-            <span
-              class="item-quantity-badge"
-              *ngIf="position.quantity !== undefined"
-            >
-              <i class="fas fa-location-dot"></i>
-              {{ position.quantity }} posições (última meia hora)
-            </span>
+            <h3 (click)="openMapModal(position)">
+              {{ position.jsonData.vehicledata.board }}
+            </h3>
+            <div class="vehicle-header-info">
+              <span class="last-update-time">
+                <i class="fas fa-clock"></i>
+                {{ getFormattedDateTime(position.jsonData.datetime) }}
+              </span>
+              <span
+                class="item-quantity-badge"
+                *ngIf="position.quantity !== undefined"
+              >
+                <i class="fas fa-location-dot"></i>
+                {{ position.quantity }} posições (meia hora)
+              </span>
+            </div>
           </div>
           <p class="vehicle-description">
             {{ position.jsonData.vehicledata.description }}
@@ -123,83 +127,166 @@
           <i class="fas fa-map-marker-alt"></i>
           <span>Localização</span>
         </div>
-        <p class="address">{{ position.jsonData.address }}</p>
+        <p class="address" (click)="openMapModal(position)">
+          {{ position.jsonData.address }}
+        </p>
         <div class="coordinates">
           <span>Lat: {{ position.jsonData.latitude }}</span>
           <span>Lng: {{ position.jsonData.longitude }}</span>
         </div>
       </div>
 
-      <!-- Vehicle Status -->
-      <div class="vehicle-status">
-        <div class="status-item">
-          <i class="fas fa-tachometer-alt"></i>
-          <div class="status-details">
-            <span class="label">Velocidade</span>
-            <span class="value speed-value"
-              >{{ getSpeedInKmh(position.jsonData.speed) }} km/h</span
-            >
-          </div>
+      <!-- Vehicle Status (Acordeon) -->
+      <div class="vehicle-status acordeon-block">
+        <div class="acordeon-header" (click)="toggleStatus(position.id)">
+          <i
+            class="fas"
+            [ngClass]="
+              statusOpen[position.id] ? 'fa-chevron-down' : 'fa-chevron-right'
+            "
+          ></i>
+          <span>Status do Veículo</span>
         </div>
-
-        <div class="status-item">
-          <i class="fas fa-compass"></i>
-          <div class="status-details">
-            <span class="label">Direção</span>
-            <span class="value">{{ position.jsonData.curse }}°</span>
+        <div class="acordeon-content" *ngIf="statusOpen[position.id]">
+          <div class="status-item">
+            <i class="fas fa-tachometer-alt"></i>
+            <div class="status-details">
+              <span class="label">Velocidade</span>
+              <span class="value speed-value"
+                >{{ getSpeedInKmh(position.jsonData.speed) }} km/h</span
+              >
+            </div>
           </div>
-        </div>
 
-        <div class="status-item">
-          <i class="fas fa-battery-three-quarters"></i>
-          <div class="status-details">
-            <span class="label">Voltagem</span>
-            <span class="value">{{ position.jsonData.voltage }}V</span>
+          <div class="status-item">
+            <i class="fas fa-compass"></i>
+            <div class="status-details">
+              <span class="label">Direção</span>
+              <span class="value">{{ position.jsonData.curse }}°</span>
+            </div>
           </div>
-        </div>
 
-        <div class="status-item">
-          <i class="fas fa-satellite"></i>
-          <div class="status-details">
-            <span class="label">Satélites</span>
-            <span class="value">{{ position.jsonData.satellites }}</span>
+          <div class="status-item">
+            <i class="fas fa-battery-three-quarters"></i>
+            <div class="status-details">
+              <span class="label">Voltagem</span>
+              <span class="value">{{ position.jsonData.voltage }}V</span>
+            </div>
+          </div>
+
+          <div class="status-item">
+            <i class="fas fa-satellite"></i>
+            <div class="status-details">
+              <span class="label">Satélites</span>
+              <span class="value">{{ position.jsonData.satellites }}</span>
+            </div>
+          </div>
+
+          <div class="status-item">
+            <i class="fas fa-road"></i>
+            <div class="status-details">
+              <span class="label">Odômetro</span>
+              <span class="value">{{ position.jsonData.odometer }} km</span>
+            </div>
+          </div>
+
+          <div class="status-item">
+            <i class="fas fa-clock"></i>
+            <div class="status-details">
+              <span class="label">Horímetro</span>
+              <span class="value">{{ position.jsonData.hourmeter }}h</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Additional Info -->
-      <div class="additional-info">
-        <div class="info-row">
-          <div class="info-item">
-            <span class="label">Odômetro:</span>
-            <span class="value">{{ position.jsonData.odometer }} km</span>
-          </div>
-          <div class="info-item">
-            <span class="label">Horímetro:</span>
-            <span class="value">{{ position.jsonData.hourmeter }}h</span>
-          </div>
+      <!-- Vehicle Control Status (Acordeon) -->
+      <div class="vehicle-control-status acordeon-block">
+        <div class="acordeon-header" (click)="toggleControl(position.id)">
+          <i
+            class="fas"
+            [ngClass]="
+              controlOpen[position.id] ? 'fa-chevron-down' : 'fa-chevron-right'
+            "
+          ></i>
+          <span>Entradas/Saídas</span>
         </div>
-        <div class="info-row">
-          <div class="info-item">
-            <span class="label">Última atualização:</span>
-            <span class="value">{{
-              getFormattedDateTime(position.jsonData.datetime)
-            }}</span>
+        <div class="acordeon-content" *ngIf="controlOpen[position.id]">
+          <div class="control-status-items">
+            <div class="control-status-item">
+              <i
+                [class]="
+                  getIgnitionStatus(position.jsonData.inputsoutputs).icon
+                "
+                [class]="
+                  getIgnitionStatus(position.jsonData.inputsoutputs).class
+                "
+              ></i>
+              <div class="control-status-details">
+                <span class="label">Ignição</span>
+                <span
+                  class="value"
+                  [class]="
+                    getIgnitionStatus(position.jsonData.inputsoutputs).class
+                  "
+                >
+                  {{
+                    getIgnitionStatus(position.jsonData.inputsoutputs).status
+                  }}
+                </span>
+              </div>
+            </div>
+
+            <div class="control-status-item">
+              <i
+                [class]="getBlockStatus(position.jsonData.inputsoutputs).icon"
+                [class]="getBlockStatus(position.jsonData.inputsoutputs).class"
+              ></i>
+              <div class="control-status-details">
+                <span class="label">Bloqueio</span>
+                <span
+                  class="value"
+                  [class]="
+                    getBlockStatus(position.jsonData.inputsoutputs).class
+                  "
+                >
+                  {{ getBlockStatus(position.jsonData.inputsoutputs).status }}
+                </span>
+              </div>
+            </div>
+
+            <div class="control-status-item">
+              <i class="fas fa-binary"></i>
+              <div class="control-status-details">
+                <span class="label">I/O Status</span>
+                <span class="value io-status">{{
+                  getInputsOutputsDisplay(position.jsonData.inputsoutputs)
+                }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Tracker Info -->
-      <div class="tracker-info">
-        <div class="tracker-header">
-          <i class="fas fa-microchip"></i>
+      <!-- Tracker Info (Acordeon) -->
+      <div class="tracker-info acordeon-block">
+        <div class="acordeon-header" (click)="toggleTracker(position.id)">
+          <i
+            class="fas"
+            [ngClass]="
+              trackerOpen[position.id] ? 'fa-chevron-down' : 'fa-chevron-right'
+            "
+          ></i>
           <span>Rastreador</span>
         </div>
-        <div class="tracker-details">
-          <span
-            >Equipamento: {{ position.jsonData.trackerdata.equipament }}</span
-          >
-          <span>Código: {{ position.jsonData.trackercode }}</span>
+        <div class="acordeon-content" *ngIf="trackerOpen[position.id]">
+          <div class="tracker-details">
+            <span>Código: {{ position.jsonData.trackercode }}</span>
+            <span
+              >Serial do aparelho:
+              {{ position.jsonData.trackerdata.equipament }}</span
+            >
+          </div>
         </div>
       </div>
     </div>

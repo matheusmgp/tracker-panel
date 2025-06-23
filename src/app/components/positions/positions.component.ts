@@ -42,6 +42,11 @@ export class PositionsComponent implements OnInit, OnDestroy {
   public isBrowser: boolean;
   public intervalTimeSeconds: number = 10;
 
+  // Controle de acordeon para cada bloco
+  public statusOpen: { [id: number]: boolean } = {};
+  public controlOpen: { [id: number]: boolean } = {};
+  public trackerOpen: { [id: number]: boolean } = {};
+
   constructor(
     private positionsApiService: PositionsApiService,
     @Inject(PLATFORM_ID) private platformId: Object
@@ -199,5 +204,79 @@ export class PositionsComponent implements OnInit, OnDestroy {
     );
     this.intervalTime = this.intervalTimeSeconds * 1000;
     this.startPolling();
+  }
+
+  // Métodos para interpretar inputsoutputs
+  public getIgnitionStatus(inputsoutputs: string): {
+    status: string;
+    icon: string;
+    class: string;
+  } {
+    if (!inputsoutputs || inputsoutputs.length < 1) {
+      return {
+        status: 'Desconhecido',
+        icon: 'fas fa-question',
+        class: 'unknown',
+      };
+    }
+
+    const ignitionBit = inputsoutputs[0];
+    if (ignitionBit === '1') {
+      return { status: 'Ligada', icon: 'fas fa-power-off', class: 'on' };
+    } else if (ignitionBit === '0') {
+      return { status: 'Desligada', icon: 'fas fa-power-off', class: 'off' };
+    } else {
+      return {
+        status: 'Desconhecido',
+        icon: 'fas fa-question',
+        class: 'unknown',
+      };
+    }
+  }
+
+  public getBlockStatus(inputsoutputs: string): {
+    status: string;
+    icon: string;
+    class: string;
+  } {
+    if (!inputsoutputs || inputsoutputs.length < 5) {
+      return {
+        status: 'Desconhecido',
+        icon: 'fas fa-question',
+        class: 'unknown',
+      };
+    }
+
+    const blockBit = inputsoutputs[4];
+    if (blockBit === '1') {
+      return { status: 'Bloqueado', icon: 'fas fa-lock', class: 'blocked' };
+    } else if (blockBit === '0') {
+      return {
+        status: 'Desbloqueado',
+        icon: 'fas fa-unlock',
+        class: 'unblocked',
+      };
+    } else {
+      return {
+        status: 'Desconhecido',
+        icon: 'fas fa-question',
+        class: 'unknown',
+      };
+    }
+  }
+
+  public getInputsOutputsDisplay(inputsoutputs: string): string {
+    if (!inputsoutputs) return 'N/A';
+    return inputsoutputs.padEnd(7, '0').substring(0, 7);
+  }
+
+  public toggleStatus(id: number) {
+    this.statusOpen[id] = !this.statusOpen[id];
+  }
+  public toggleControl(id: number) {
+    this.controlOpen[id] = !this.controlOpen[id];
+  }
+  public toggleTracker(id: number) {
+    this.trackerOpen[id] = !this.trackerOpen[id];
   }
 }
