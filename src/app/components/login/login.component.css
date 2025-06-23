@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f6f8f9;
+  background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 50%, #0e6655 100%);
 }
 
 .login-form {
@@ -75,4 +75,22 @@ button[type="submit"]:disabled {
   text-align: center;
   margin-top: 0.5rem;
   font-size: 0.98rem;
+}
+
+.login-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.login-logo img {
+  max-width: 170px;
+  height: auto;
+  filter: drop-shadow(0 4px 16px rgba(14, 102, 85, 0.15));
+  transition: transform 0.3s;
+}
+
+.login-logo img:hover {
+  transform: scale(1.05) rotate(-2deg);
 }

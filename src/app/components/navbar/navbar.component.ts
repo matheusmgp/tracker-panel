@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
 import { Observable } from 'rxjs';
 
@@ -19,7 +19,7 @@ export class NavbarComponent implements OnInit {
   isMinimized = false;
   @Output() minimizedChange = new EventEmitter<boolean>();
 
-  constructor(private themeService: ThemeService) {
+  constructor(private themeService: ThemeService, private router: Router) {
     this.isDarkTheme$ = this.themeService.isDarkTheme$;
   }
 
@@ -36,5 +36,10 @@ export class NavbarComponent implements OnInit {
   toggleMinimize(): void {
     this.isMinimized = !this.isMinimized;
     this.minimizedChange.emit(this.isMinimized);
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
+    this.router.navigate(['/']);
   }
 }

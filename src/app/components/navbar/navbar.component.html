@@ -69,6 +69,11 @@
 </nav>
 
 <div class="top-bar" [class.minimized]="isMinimized">
-  <div class="top-bar-content"></div>
   <img [src]="logoTop" alt="Logo" class="logo-top" *ngIf="!isMinimized" />
+  <div class="top-bar-content">
+    <button class="logout-btn" (click)="logout()" title="Sair">
+      <i class="fas fa-sign-out-alt"></i>
+      <span *ngIf="!isMinimized">Sair</span>
+    </button>
+  </div>
 </div>

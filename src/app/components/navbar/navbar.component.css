@@ -289,6 +289,37 @@
   font-weight: 500;
 }
 
+.logout-btn {
+  background: none;
+  border: none;
+  color: var(--navbar-text);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+  margin-left: auto;
+}
+
+.logout-btn:hover {
+  background: var(--navbar-hover);
+}
+
+.logout-btn i {
+  font-size: 1.2rem;
+}
+
+.top-bar-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 0.5rem 1rem 0.5rem 0;
+}
+
 @media (max-width: 768px) {
   .navbar {
     width: 100%;
