@@ -7,13 +7,14 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -46,8 +47,18 @@ export class LoginComponent {
         }
         this.loading = false;
       },
-      error: () => {
-        this.error = 'Erro ao conectar com o servidor.';
+      error: (err) => {
+        if (err.error && err.error.message) {
+          this.error = err.error.message;
+        } else if (
+          err.status === 401 ||
+          err.status === 400 ||
+          err.status === 404
+        ) {
+          this.error = 'Login ou senha inválidos.';
+        } else {
+          this.error = 'Erro ao conectar com o servidor. Tente novamente.';
+        }
         this.loading = false;
       },
     });
