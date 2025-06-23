@@ -52,6 +52,12 @@ export class PositionsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.isBrowser) {
+      // Recupera o valor salvo do intervalo, se existir
+      const savedInterval = localStorage.getItem('positions-interval-seconds');
+      if (savedInterval) {
+        this.intervalTimeSeconds = Number(savedInterval);
+        this.intervalTime = this.intervalTimeSeconds * 1000;
+      }
       this.startPolling();
     }
   }
@@ -186,6 +192,11 @@ export class PositionsComponent implements OnInit, OnDestroy {
     if (this.intervalTimeSeconds < 2) {
       this.intervalTimeSeconds = 2;
     }
+    // Salva o valor no localStorage
+    localStorage.setItem(
+      'positions-interval-seconds',
+      String(this.intervalTimeSeconds)
+    );
     this.intervalTime = this.intervalTimeSeconds * 1000;
     this.startPolling();
   }
