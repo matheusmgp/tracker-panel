@@ -99,18 +99,82 @@
               {{ position.jsonData.vehicledata.board }}
             </h3>
             <div class="vehicle-header-info">
-              <span class="last-update-time">
-                <i class="fas fa-clock"></i>
-                {{ getFormattedDateTime(position.jsonData.datetime) }}
-              </span>
               <span
                 class="item-quantity-badge"
                 *ngIf="position.quantity !== undefined"
               >
                 <i class="fas fa-location-dot"></i>
-                {{ position.quantity }} posições (meia hora)
+                {{ position.quantity }} posições
               </span>
+              <div class="status-indicators">
+                <div class="status-indicator-item">
+                  <div
+                    class="status-dot ignition-dot"
+                    [ngClass]="
+                      getIgnitionStatus(position.jsonData.inputsoutputs)
+                        .status === 'Ligada'
+                        ? 'on'
+                        : 'off'
+                    "
+                    title="Ignição: {{
+                      getIgnitionStatus(position.jsonData.inputsoutputs).status
+                    }}"
+                  ></div>
+                  <span
+                    class="status-label"
+                    [ngClass]="
+                      getIgnitionStatus(position.jsonData.inputsoutputs)
+                        .status === 'Ligada'
+                        ? 'on'
+                        : 'off'
+                    "
+                  >
+                    {{
+                      getIgnitionStatus(position.jsonData.inputsoutputs)
+                        .status === "Ligada"
+                        ? "Ligado"
+                        : "Desligado"
+                    }}
+                  </span>
+                </div>
+                <div class="status-indicator-item">
+                  <div
+                    class="status-dot block-dot"
+                    [ngClass]="
+                      getBlockStatus(position.jsonData.inputsoutputs).status ===
+                      'Desbloqueado'
+                        ? 'unblocked'
+                        : 'blocked'
+                    "
+                    title="Bloqueio: {{
+                      getBlockStatus(position.jsonData.inputsoutputs).status
+                    }}"
+                  ></div>
+                  <span
+                    class="status-label"
+                    [ngClass]="
+                      getBlockStatus(position.jsonData.inputsoutputs).status ===
+                      'Desbloqueado'
+                        ? 'unblocked'
+                        : 'blocked'
+                    "
+                  >
+                    {{
+                      getBlockStatus(position.jsonData.inputsoutputs).status ===
+                      "Desbloqueado"
+                        ? "Desbloqueado"
+                        : "Bloqueado"
+                    }}
+                  </span>
+                </div>
+              </div>
             </div>
+          </div>
+          <div class="vehicle-update-time">
+            <span class="last-update-time">
+              <i class="fas fa-clock"></i>
+              {{ getFormattedDateTime(position.jsonData.datetime) }}
+            </span>
           </div>
           <p class="vehicle-description">
             {{ position.jsonData.vehicledata.description }}
@@ -195,74 +259,6 @@
             <div class="status-details">
               <span class="label">Horímetro</span>
               <span class="value">{{ position.jsonData.hourmeter }}h</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Vehicle Control Status (Acordeon) -->
-      <div class="vehicle-control-status acordeon-block">
-        <div class="acordeon-header" (click)="toggleControl(position.id)">
-          <i
-            class="fas"
-            [ngClass]="
-              controlOpen[position.id] ? 'fa-chevron-down' : 'fa-chevron-right'
-            "
-          ></i>
-          <span>Entradas/Saídas</span>
-        </div>
-        <div class="acordeon-content" *ngIf="controlOpen[position.id]">
-          <div class="control-status-items">
-            <div class="control-status-item">
-              <i
-                [class]="
-                  getIgnitionStatus(position.jsonData.inputsoutputs).icon
-                "
-                [class]="
-                  getIgnitionStatus(position.jsonData.inputsoutputs).class
-                "
-              ></i>
-              <div class="control-status-details">
-                <span class="label">Ignição</span>
-                <span
-                  class="value"
-                  [class]="
-                    getIgnitionStatus(position.jsonData.inputsoutputs).class
-                  "
-                >
-                  {{
-                    getIgnitionStatus(position.jsonData.inputsoutputs).status
-                  }}
-                </span>
-              </div>
-            </div>
-
-            <div class="control-status-item">
-              <i
-                [class]="getBlockStatus(position.jsonData.inputsoutputs).icon"
-                [class]="getBlockStatus(position.jsonData.inputsoutputs).class"
-              ></i>
-              <div class="control-status-details">
-                <span class="label">Bloqueio</span>
-                <span
-                  class="value"
-                  [class]="
-                    getBlockStatus(position.jsonData.inputsoutputs).class
-                  "
-                >
-                  {{ getBlockStatus(position.jsonData.inputsoutputs).status }}
-                </span>
-              </div>
-            </div>
-
-            <div class="control-status-item">
-              <i class="fas fa-binary"></i>
-              <div class="control-status-details">
-                <span class="label">I/O Status</span>
-                <span class="value io-status">{{
-                  getInputsOutputsDisplay(position.jsonData.inputsoutputs)
-                }}</span>
-              </div>
             </div>
           </div>
         </div>
