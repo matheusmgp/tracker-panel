@@ -42,9 +42,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
   public isBrowser: boolean;
   public intervalTimeSeconds: number = 10;
 
-  // Controle de acordeon para cada bloco
   public statusOpen: { [id: number]: boolean } = {};
-  public controlOpen: { [id: number]: boolean } = {};
   public trackerOpen: { [id: number]: boolean } = {};
 
   constructor(
@@ -57,7 +55,6 @@ export class PositionsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.isBrowser) {
-      // Recupera o valor salvo do intervalo, se existir
       const savedInterval = localStorage.getItem('positions-interval-seconds');
       if (savedInterval) {
         this.intervalTimeSeconds = Number(savedInterval);
@@ -197,7 +194,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
     if (this.intervalTimeSeconds < 2) {
       this.intervalTimeSeconds = 2;
     }
-    // Salva o valor no localStorage
+
     localStorage.setItem(
       'positions-interval-seconds',
       String(this.intervalTimeSeconds)
@@ -221,6 +218,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
     }
 
     const ignitionBit = inputsoutputs[0];
+
     if (ignitionBit === '1') {
       return { status: 'Ligada', icon: 'fas fa-power-off', class: 'on' };
     } else if (ignitionBit === '0') {
@@ -248,6 +246,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
     }
 
     const blockBit = inputsoutputs[4];
+
     if (blockBit === '1') {
       return { status: 'Bloqueado', icon: 'fas fa-lock', class: 'blocked' };
     } else if (blockBit === '0') {
@@ -265,17 +264,10 @@ export class PositionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getInputsOutputsDisplay(inputsoutputs: string): string {
-    if (!inputsoutputs) return 'N/A';
-    return inputsoutputs.padEnd(7, '0').substring(0, 7);
-  }
-
   public toggleStatus(id: number) {
     this.statusOpen[id] = !this.statusOpen[id];
   }
-  public toggleControl(id: number) {
-    this.controlOpen[id] = !this.controlOpen[id];
-  }
+
   public toggleTracker(id: number) {
     this.trackerOpen[id] = !this.trackerOpen[id];
   }
