@@ -27,7 +27,7 @@ const (
 	INITIAL_RECONNECT_DELAY = 5 * time.Second
 	MAX_RECONNECT_DELAY     = 60 * time.Second
 	CONNECTION_TIMEOUT      = 30 * time.Second
-	READ_TIMEOUT           = 30 * time.Second
+	READ_TIMEOUT           = 300000 * time.Second
 	WRITE_TIMEOUT          = 10 * time.Second
 	PING_INTERVAL          = 30 * time.Second
 )
@@ -281,7 +281,6 @@ func (tc *TCPClient) connect() error {
 	address := fmt.Sprintf("%s:%d", tcpHost, TCP_PORT)
 	fmt.Printf("🔌 Tentando conectar ao servidor TCP %s...\n", address)
 
-	// Criar conexão com timeout
 	dialer := &net.Dialer{
 		Timeout: CONNECTION_TIMEOUT,
 	}
@@ -295,11 +294,21 @@ func (tc *TCPClient) connect() error {
 	tc.reconnectAttempts = 0
 	fmt.Println("✅ Conectado ao servidor TCP")
 
-	// Notificar clientes WebSocket sobre a conexão
+	_, err = conn.Write([]byte("PANEL\n"))
+	if err != nil {
+		log.Printf("❌ Erro ao enviar identificação PANEL: %v", err)
+		tc.conn.Close()
+		tc.conn = nil
+		return fmt.Errorf("erro ao identificar como painel: %v", err)
+	}
+	fmt.Println("✅ Identificado como PANEL com sucesso")
+
+	// Notificar WebSocket sobre conexão
 	tc.hub.broadcastConnectionStatus(true)
 
 	return nil
 }
+
 
 func (tc *TCPClient) disconnect() {
 	tc.mu.Lock()
@@ -341,11 +350,17 @@ func (tc *TCPClient) readLoop() {
 			return
 		}
 
-		dataStr := strings.TrimSpace(string(buffer[:n]))
-		if dataStr != "" {
-			fmt.Printf("📩 Dados recebidos do TCP: %s\n", dataStr)
-			tc.hub.broadcastToWebSocket(dataStr)
-		}
+		dataStr := string(buffer[:n])
+    lines := strings.Split(dataStr, "\n")
+
+    for _, line := range lines {
+      line = strings.TrimSpace(line)
+      if line == "" {
+        continue
+      }
+      log.Printf("📩 Mensagem recebida do TCP: %s", line)
+      tc.hub.broadcastToWebSocket(line)
+    }
 	}
 }
 
