@@ -177,7 +177,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
 
     if (lat && lon) {
       this.selectedPosition = position;
-      this.mapUrl = `https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed`;
+      this.mapUrl = `https://maps.google.com/maps?q=${lat},${lon}&z=16&t=h&layer=t&hl=pt-BR&region=BR&output=embed`;
       this.showMapModal = true;
     } else {
       console.error('Latitude ou Longitude inválida para a posição:', position);
