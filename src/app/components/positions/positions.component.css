@@ -235,6 +235,11 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 20px;
+  width: 100%;
+}
+
+.vehicle-info {
+  width: 100%;
 }
 
 .vehicle-info h3 {

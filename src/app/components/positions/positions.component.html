@@ -92,7 +92,7 @@
   >
     <div class="position-card" *ngFor="let position of filteredPositions">
       <!-- Vehicle Header -->
-      <div class="vehicle-header">
+      <div class="vehicle-header" style="width: 100%">
         <div class="vehicle-info">
           <div
             class="vehicle-board-row"
@@ -194,18 +194,29 @@
             style="
               display: flex;
               align-items: center;
-              justify-content: space-between;
               width: 100%;
               margin-top: 2px;
             "
           >
             <span
               class="client-name"
-              style="font-size: 1.05rem; font-weight: 600; color: #0e6655"
+              style="
+                font-size: 1.05rem;
+                font-weight: 600;
+                color: #0e6655;
+                flex: 1 1 auto;
+                min-width: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              "
             >
               {{ position.jsonData.vehicledata.clientData.clientfantasy }}
             </span>
-            <span class="last-update-time">
+            <span
+              class="last-update-time"
+              style="margin-left: 12px; flex-shrink: 0"
+            >
               <i class="fas fa-clock"></i>
               {{ getFormattedDateTime(position.jsonData.datetime) }}
             </span>
