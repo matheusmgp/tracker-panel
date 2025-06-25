@@ -255,6 +255,7 @@
   color: #0e6655;
   font-weight: 500;
   font-size: 0.9rem;
+  margin-right: 18px;
 }
 
 .status-indicators {
@@ -333,6 +334,7 @@
   padding: 15px;
   border-radius: 10px;
   margin-bottom: 20px;
+  position: relative;
 }
 
 .location-header {
@@ -357,6 +359,36 @@
   gap: 15px;
   font-size: 0.85rem;
   color: #718096;
+}
+
+/* Badge de quantidade dentro da location-info */
+.location-info .item-quantity-badge {
+  position: absolute;
+  top: 15px;
+  right: 18px;
+  z-index: 1;
+  background: #e8f5e9;
+  color: #0e6655;
+  border: 1px solid #b2dfdb;
+  font-size: 0.93rem;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(14, 102, 85, 0.07);
+  padding: 3px 12px 3px 9px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+@media (max-width: 600px) {
+  .location-info .item-quantity-badge {
+    position: static;
+    margin: 8px 0 0 0;
+    width: 100%;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 0.98rem;
+  }
 }
 
 /* Vehicle Status */

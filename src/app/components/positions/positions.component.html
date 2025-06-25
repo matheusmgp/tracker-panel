@@ -94,94 +94,122 @@
       <!-- Vehicle Header -->
       <div class="vehicle-header">
         <div class="vehicle-info">
-          <div class="vehicle-board-row">
-            <h3 (click)="openMapModal(position)">
-              {{ position.jsonData.vehicledata.board }}
-            </h3>
-            <div class="vehicle-header-info">
-              <span
-                class="item-quantity-badge"
-                *ngIf="position.quantity !== undefined"
-              >
-                <i class="fas fa-location-dot"></i>
-                {{ position.quantity }} posições
-              </span>
-              <div class="status-indicators">
-                <div class="status-indicator-item">
-                  <div
-                    class="status-dot ignition-dot"
-                    [ngClass]="
-                      getIgnitionStatus(position.jsonData.inputsoutputs)
-                        .status === 'Ligada'
-                        ? 'on'
-                        : 'off'
-                    "
-                    title="Ignição: {{
-                      getIgnitionStatus(position.jsonData.inputsoutputs).status
-                    }}"
-                  ></div>
-                  <span
-                    class="status-label"
-                    [ngClass]="
-                      getIgnitionStatus(position.jsonData.inputsoutputs)
-                        .status === 'Ligada'
-                        ? 'on'
-                        : 'off'
-                    "
-                  >
-                    {{
-                      getIgnitionStatus(position.jsonData.inputsoutputs)
-                        .status === "Ligada"
-                        ? "Ligado"
-                        : "Desligado"
-                    }}
-                  </span>
-                </div>
-                <div class="status-indicator-item">
-                  <div
-                    class="status-dot block-dot"
-                    [ngClass]="
-                      getBlockStatus(position.jsonData.inputsoutputs).status ===
-                      'Desbloqueado'
-                        ? 'unblocked'
-                        : 'blocked'
-                    "
-                    title="Bloqueio: {{
-                      getBlockStatus(position.jsonData.inputsoutputs).status
-                    }}"
-                  ></div>
-                  <span
-                    class="status-label"
-                    [ngClass]="
-                      getBlockStatus(position.jsonData.inputsoutputs).status ===
-                      'Desbloqueado'
-                        ? 'unblocked'
-                        : 'blocked'
-                    "
-                  >
-                    {{
-                      getBlockStatus(position.jsonData.inputsoutputs).status ===
-                      "Desbloqueado"
-                        ? "Desbloqueado"
-                        : "Bloqueado"
-                    }}
-                  </span>
-                </div>
+          <div
+            class="vehicle-board-row"
+            style="
+              width: 100%;
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 0;
+            "
+          >
+            <div class="status-indicators" style="margin-bottom: 2px">
+              <div class="status-indicator-item">
+                <div
+                  class="status-dot ignition-dot"
+                  [ngClass]="
+                    getIgnitionStatus(position.jsonData.inputsoutputs)
+                      .status === 'Ligada'
+                      ? 'on'
+                      : 'off'
+                  "
+                  title="Ignição: {{
+                    getIgnitionStatus(position.jsonData.inputsoutputs).status
+                  }}"
+                ></div>
+                <span
+                  class="status-label"
+                  [ngClass]="
+                    getIgnitionStatus(position.jsonData.inputsoutputs)
+                      .status === 'Ligada'
+                      ? 'on'
+                      : 'off'
+                  "
+                >
+                  {{
+                    getIgnitionStatus(position.jsonData.inputsoutputs)
+                      .status === "Ligada"
+                      ? "Ligado"
+                      : "Desligado"
+                  }}
+                </span>
+              </div>
+              <div class="status-indicator-item">
+                <div
+                  class="status-dot block-dot"
+                  [ngClass]="
+                    getBlockStatus(position.jsonData.inputsoutputs).status ===
+                    'Desbloqueado'
+                      ? 'unblocked'
+                      : 'blocked'
+                  "
+                  title="Bloqueio: {{
+                    getBlockStatus(position.jsonData.inputsoutputs).status
+                  }}"
+                ></div>
+                <span
+                  class="status-label"
+                  [ngClass]="
+                    getBlockStatus(position.jsonData.inputsoutputs).status ===
+                    'Desbloqueado'
+                      ? 'unblocked'
+                      : 'blocked'
+                  "
+                >
+                  {{
+                    getBlockStatus(position.jsonData.inputsoutputs).status ===
+                    "Desbloqueado"
+                      ? "Desbloqueado"
+                      : "Bloqueado"
+                  }}
+                </span>
               </div>
             </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: wrap;
+                width: 100%;
+              "
+            >
+              <h3 (click)="openMapModal(position)">
+                {{ position.jsonData.vehicledata.board }}
+              </h3>
+              <span
+                class="vehicle-description"
+                style="
+                  margin-left: 10px;
+                  color: #4a5568;
+                  font-size: 1rem;
+                  font-weight: 500;
+                "
+              >
+                {{ position.jsonData.vehicledata.description }}
+              </span>
+            </div>
           </div>
-          <div class="vehicle-update-time">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              width: 100%;
+              margin-top: 2px;
+            "
+          >
+            <span
+              class="client-name"
+              style="font-size: 1.05rem; font-weight: 600; color: #0e6655"
+            >
+              {{ position.jsonData.vehicledata.clientData.clientfantasy }}
+            </span>
             <span class="last-update-time">
               <i class="fas fa-clock"></i>
               {{ getFormattedDateTime(position.jsonData.datetime) }}
             </span>
           </div>
-          <p class="vehicle-description">
-            {{ position.jsonData.vehicledata.description }}
-          </p>
-          <p class="client-name">
-            {{ position.jsonData.vehicledata.clientData.clientfantasy }}
-          </p>
         </div>
       </div>
 
@@ -191,6 +219,13 @@
           <i class="fas fa-map-marker-alt"></i>
           <span>Localização</span>
         </div>
+        <span
+          class="item-quantity-badge"
+          *ngIf="position.quantity !== undefined"
+        >
+          <i class="fas fa-location-dot"></i>
+          {{ position.quantity }} posições
+        </span>
         <p class="address" (click)="openMapModal(position)">
           {{ position.jsonData.address }}
         </p>
