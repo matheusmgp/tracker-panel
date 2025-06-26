@@ -44,11 +44,9 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
   public activeTab: 'suntech' | 'obd' = 'suntech';
   public selectedTrackerInfo$ = this.selectedTrackerInfo.asObservable();
 
-  // Observable para o termo de pesquisa
   private searchTermSubject = new BehaviorSubject<string>('');
   public searchTerm$ = this.searchTermSubject.asObservable();
 
-  // Observables filtrados para cada aba com pesquisa
   public suntechMessages$ = combineLatest([
     this.messages$.pipe(
       map((messages) =>
@@ -207,26 +205,24 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
 
   private handleWebSocketMessage(event: MessageEvent, prefix: string): void {
     try {
-      console.log(`📩 Dados brutos recebidos (${prefix}):`, event.data);
-      const data = JSON.parse(event.data);
-      console.log(`📩 Dados processados (${prefix}):`, data);
+      const dataReceived = JSON.parse(event.data);
+      console.log(`Dados processados (${prefix}):`, dataReceived);
+
+      if (dataReceived.data === 'TCP connection status: connected') return;
 
       const currentMessages = this.messagesSubject.value;
 
-      // Processar os dados da string
-      const parts = data.data.split(';');
+      const parts = dataReceived.data.split(';');
+
       const mappedData: MappedTrackerData = {
         tipo: parts[0],
         serialNumber: parts[1],
         versao: parts[2],
       };
 
-      // Se for uma mensagem de comando (4 partes)
       if (parts.length === 4) {
         mappedData.comando = parts[3];
-      }
-      // Se for uma mensagem completa (15 partes)
-      else if (parts.length === 15) {
+      } else if (parts.length === 15) {
         mappedData.estacionamento = parts[3];
         mappedData.speedmax = Number(parts[4]);
         mappedData.tipoConexao = parts[5];
@@ -242,19 +238,16 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
       }
 
       const newMessage: DisplayMessage = {
-        timestamp: data.timestamp,
-        event: `${prefix}_${data.event}`,
+        timestamp: dataReceived.timestamp,
+        event: `${prefix}_${dataReceived.event}`,
         data: mappedData,
-        rawData: data.data,
+        rawData: dataReceived.data,
       };
 
-      console.log('📝 Nova mensagem:', newMessage);
+      console.log('Nova mensagem:', newMessage);
       this.messagesSubject.next([newMessage, ...currentMessages]);
     } catch (error) {
-      console.error(
-        `❌ Erro ao processar dados do WebSocket ${prefix}:`,
-        error
-      );
+      console.error(`Erro ao processar dados do WebSocket ${prefix}:`, error);
     }
   }
 
@@ -326,7 +319,6 @@ export class SocketPanelComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Método para atualizar o termo de pesquisa
   public onSearchChange(value: string): void {
     this.searchTermSubject.next(value);
   }
