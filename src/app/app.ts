@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { LoginComponent } from './components/login/login.component';
 import { CommonModule } from '@angular/common';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,10 @@ export class App {
   protected title = 'tracker-panel';
   navbarMinimized = false;
 
+  constructor(private authService: AuthService) {}
+
   get isLoggedIn(): boolean {
-    return typeof window !== 'undefined' && !!localStorage.getItem('token');
+    if (typeof window === 'undefined') return false;
+    return this.authService.isLoggedIn();
   }
 }

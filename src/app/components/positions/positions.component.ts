@@ -14,6 +14,7 @@ import { switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ApiResponse, PositionData } from './interfaces/positions.interfaces';
 import { isPlatformBrowser } from '@angular/common';
+import { StorageService } from '../../services/storage.service';
 
 @Component({
   selector: 'app-positions',
@@ -51,6 +52,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
 
   constructor(
     private positionsApiService: PositionsApiService,
+    private storageService: StorageService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -59,7 +61,9 @@ export class PositionsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.isBrowser) {
-      const savedInterval = localStorage.getItem('positions-interval-seconds');
+      const savedInterval = this.storageService.getItem(
+        'positions-interval-seconds'
+      );
       if (savedInterval) {
         this.intervalTimeSeconds = Number(savedInterval);
         this.intervalTime = this.intervalTimeSeconds * 1000;
@@ -170,10 +174,12 @@ export class PositionsComponent implements OnInit, OnDestroy {
       this.intervalTimeSeconds = 2;
     }
 
-    localStorage.setItem(
-      'positions-interval-seconds',
-      String(this.intervalTimeSeconds)
-    );
+    if (this.isBrowser) {
+      this.storageService.setItem(
+        'positions-interval-seconds',
+        String(this.intervalTimeSeconds)
+      );
+    }
     this.intervalTime = this.intervalTimeSeconds * 1000;
     this.startPolling();
   }

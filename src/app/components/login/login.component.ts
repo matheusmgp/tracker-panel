@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { StorageService } from '../../services/storage.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -24,6 +25,7 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private storageService: StorageService,
     private router: Router
   ) {
     this.loginForm = this.fb.group({
@@ -40,8 +42,14 @@ export class LoginComponent {
     this.authService.login(login, password).subscribe({
       next: (res) => {
         if (res.success && res.data?.token) {
-          localStorage.setItem('token', res.data.token);
-          this.router.navigate(['/']);
+          this.storageService.setItem('token', res.data.token);
+
+          // Verifica se o usuário tem acesso admin
+          if (this.authService.hasAdminAccess()) {
+            this.router.navigate(['/painel']);
+          } else {
+            this.router.navigate(['/posicoes']);
+          }
         } else {
           this.error = 'Login ou senha inválidos.';
         }

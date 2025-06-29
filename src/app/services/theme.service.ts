@@ -1,6 +1,7 @@
 import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,11 +11,14 @@ export class ThemeService {
   isDarkTheme$ = this.isDarkTheme.asObservable();
   private isBrowser: boolean;
 
-  constructor(@Inject(PLATFORM_ID) platformId: Object) {
+  constructor(
+    @Inject(PLATFORM_ID) platformId: Object,
+    private storageService: StorageService
+  ) {
     this.isBrowser = isPlatformBrowser(platformId);
 
     if (this.isBrowser) {
-      const savedTheme = localStorage.getItem('theme');
+      const savedTheme = this.storageService.getItem('theme');
       if (savedTheme) {
         this.isDarkTheme.next(savedTheme === 'dark');
         this.applyTheme(savedTheme === 'dark');
@@ -28,7 +32,7 @@ export class ThemeService {
     this.applyTheme(newTheme);
 
     if (this.isBrowser) {
-      localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+      this.storageService.setItem('theme', newTheme ? 'dark' : 'light');
     }
   }
 

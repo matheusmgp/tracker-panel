@@ -24,7 +24,7 @@
 
     <div class="navbar-menu" [class.active]="isMenuOpen">
       <ul class="nav-links">
-        <li>
+        <li *ngIf="hasAdminAccess">
           <a routerLink="/painel" routerLinkActive="active">
             <i class="fas fa-car"></i>
             <span *ngIf="!isMinimized">Painel</span>
