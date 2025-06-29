@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	TCP_PORT = 5000
+	TCP_PORT = 8000
 	WS_PORT  = 3001
 	HOST     = "0.0.0.0"
 

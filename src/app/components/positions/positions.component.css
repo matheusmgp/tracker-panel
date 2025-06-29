@@ -1289,3 +1289,36 @@
   align-items: center;
   gap: 4px;
 }
+
+/* Filtros de status */
+.filters-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 0 0;
+  flex-wrap: wrap;
+}
+
+.filters-row button {
+  background: #fff2;
+  border: 1px solid #fff4;
+  color: #fff;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 0.98rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.filters-row button.active-filter {
+  background: #fff;
+  color: #e74c3c;
+  border: 2px solid #e74c3c;
+  font-weight: 700;
+}
+.filters-row button:not(.active-filter):hover {
+  background: #fff3;
+  color: #27ae60;
+  border: 1.5px solid #27ae60;
+}

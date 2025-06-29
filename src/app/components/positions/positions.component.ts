@@ -45,6 +45,10 @@ export class PositionsComponent implements OnInit, OnDestroy {
   public statusOpen: { [id: number]: boolean } = {};
   public trackerOpen: { [id: number]: boolean } = {};
 
+  // Filtros de status
+  public filtroIgnicao: 'todos' | 'ligados' | 'desligados' = 'todos';
+  public filtroBloqueio: 'todos' | 'bloqueados' | 'desbloqueados' = 'todos';
+
   constructor(
     private positionsApiService: PositionsApiService,
     @Inject(PLATFORM_ID) private platformId: Object
@@ -134,41 +138,12 @@ export class PositionsComponent implements OnInit, OnDestroy {
   }
 
   public onSearchChange(): void {
-    if (!this.searchTerm.trim()) {
-      // Se o campo de pesquisa foi limpo, sincroniza com os dados mais recentes
-      this.positions = [...this.latestPositions];
-      this.filteredPositions = [...this.latestPositions];
-    } else {
-      // Enquanto estiver pesquisando, filtra sobre o array exibido atualmente
-      const searchLower = this.searchTerm.toLowerCase().trim();
-      this.filteredPositions = this.positions.filter((position) => {
-        const board = position.jsonData.vehicledata.board?.toLowerCase() || '';
-        const description =
-          position.jsonData.vehicledata.description?.toLowerCase() || '';
-        const clientName =
-          position.jsonData.vehicledata.clientData.clientfantasy?.toLowerCase() ||
-          '';
-        const address = position.jsonData.address?.toLowerCase() || '';
-        const trackerCode = position.jsonData.trackercode?.toString() || '';
-        const equipment =
-          position.jsonData.trackerdata.equipament?.toLowerCase() || '';
-
-        return (
-          board.includes(searchLower) ||
-          description.includes(searchLower) ||
-          clientName.includes(searchLower) ||
-          address.includes(searchLower) ||
-          trackerCode.includes(searchLower) ||
-          equipment.includes(searchLower)
-        );
-      });
-    }
+    this.aplicarFiltros();
   }
 
   public clearSearch(): void {
     this.searchTerm = '';
-    this.positions = [...this.latestPositions];
-    this.filteredPositions = [...this.latestPositions];
+    this.aplicarFiltros();
   }
 
   public openMapModal(position: PositionData): void {
@@ -270,5 +245,87 @@ export class PositionsComponent implements OnInit, OnDestroy {
 
   public toggleTracker(id: number) {
     this.trackerOpen[id] = !this.trackerOpen[id];
+  }
+
+  public aplicarFiltros(): void {
+    let lista = [...this.positions];
+    if (this.filtroIgnicao !== 'todos') {
+      lista = lista.filter((position) => {
+        const ignicao = this.getIgnitionStatus(
+          position.jsonData.inputsoutputs
+        ).status;
+        return this.filtroIgnicao === 'ligados'
+          ? ignicao === 'Ligada'
+          : ignicao === 'Desligada';
+      });
+    }
+    if (this.filtroBloqueio !== 'todos') {
+      lista = lista.filter((position) => {
+        const bloqueio = this.getBlockStatus(
+          position.jsonData.inputsoutputs
+        ).status;
+        return this.filtroBloqueio === 'bloqueados'
+          ? bloqueio === 'Bloqueado'
+          : bloqueio === 'Desbloqueado';
+      });
+    }
+    // Aplica também o filtro de pesquisa, se houver
+    if (this.searchTerm.trim()) {
+      const searchLower = this.searchTerm.toLowerCase().trim();
+      lista = lista.filter((position) => {
+        const board = position.jsonData.vehicledata.board?.toLowerCase() || '';
+        const description =
+          position.jsonData.vehicledata.description?.toLowerCase() || '';
+        const clientName =
+          position.jsonData.vehicledata.clientData.clientfantasy?.toLowerCase() ||
+          '';
+        const address = position.jsonData.address?.toLowerCase() || '';
+        const trackerCode = position.jsonData.trackercode?.toString() || '';
+        const equipment =
+          position.jsonData.trackerdata.equipament?.toLowerCase() || '';
+        return (
+          board.includes(searchLower) ||
+          description.includes(searchLower) ||
+          clientName.includes(searchLower) ||
+          address.includes(searchLower) ||
+          trackerCode.includes(searchLower) ||
+          equipment.includes(searchLower)
+        );
+      });
+    }
+    this.filteredPositions = lista;
+  }
+
+  public setFiltroIgnicao(filtro: 'todos' | 'ligados' | 'desligados') {
+    this.filtroIgnicao = filtro;
+    this.aplicarFiltros();
+  }
+
+  public setFiltroBloqueio(filtro: 'todos' | 'bloqueados' | 'desbloqueados') {
+    this.filtroBloqueio = filtro;
+    this.aplicarFiltros();
+  }
+
+  // Métodos para contagem dos filtros
+  public getCountIgnicao(tipo: 'ligados' | 'desligados'): number {
+    return this.positions.filter((position) => {
+      const ignicao = this.getIgnitionStatus(
+        position.jsonData.inputsoutputs
+      ).status;
+      return tipo === 'ligados'
+        ? ignicao === 'Ligada'
+        : ignicao === 'Desligada';
+    }).length;
+  }
+
+  public getCountBloqueio(tipo: 'bloqueados' | 'desbloqueados'): number {
+    return this.positions.filter((position) => {
+      const bloqueio = this.getBlockStatus(
+        position.jsonData.inputsoutputs
+      ).status;
+      return tipo === 'bloqueados'
+        ? bloqueio === 'Bloqueado'
+        : bloqueio === 'Desbloqueado';
+    }).length;
   }
 }

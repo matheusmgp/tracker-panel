@@ -67,6 +67,60 @@
     </div>
   </div>
 
+  <!-- Filtros de status -->
+  <div class="filters-row" style="display: flex; gap: 12px; margin: 12px 0 0 0">
+    <div style="display: flex; gap: 4px; align-items: center">
+      <span style="font-weight: 500; color: #fff">Ignição:</span>
+      <button
+        (click)="setFiltroIgnicao('todos')"
+        [ngClass]="{ 'active-filter': filtroIgnicao === 'todos' }"
+      >
+        Todos ({{ positions.length }})
+      </button>
+      <button
+        (click)="setFiltroIgnicao('ligados')"
+        [ngClass]="{ 'active-filter': filtroIgnicao === 'ligados' }"
+      >
+        <span style="color: #27ae60; font-weight: bold">●</span> Ligados ({{
+          getCountIgnicao("ligados")
+        }})
+      </button>
+      <button
+        (click)="setFiltroIgnicao('desligados')"
+        [ngClass]="{ 'active-filter': filtroIgnicao === 'desligados' }"
+      >
+        <span style="color: #e74c3c; font-weight: bold">●</span> Desligados ({{
+          getCountIgnicao("desligados")
+        }})
+      </button>
+    </div>
+    <div style="display: flex; gap: 4px; align-items: center">
+      <span style="font-weight: 500; color: #fff">Bloqueio:</span>
+      <button
+        (click)="setFiltroBloqueio('todos')"
+        [ngClass]="{ 'active-filter': filtroBloqueio === 'todos' }"
+      >
+        Todos ({{ positions.length }})
+      </button>
+      <button
+        (click)="setFiltroBloqueio('desbloqueados')"
+        [ngClass]="{ 'active-filter': filtroBloqueio === 'desbloqueados' }"
+      >
+        <i class="fas fa-unlock" style="color: #27ae60"></i> Desbloqueados ({{
+          getCountBloqueio("desbloqueados")
+        }})
+      </button>
+      <button
+        (click)="setFiltroBloqueio('bloqueados')"
+        [ngClass]="{ 'active-filter': filtroBloqueio === 'bloqueados' }"
+      >
+        <i class="fas fa-lock" style="color: #e74c3c"></i> Bloqueados ({{
+          getCountBloqueio("bloqueados")
+        }})
+      </button>
+    </div>
+  </div>
+
   <!-- Loading State -->
   <div class="loading-container" *ngIf="loading && positions.length === 0">
     <div class="loading-spinner"></div>
