@@ -143,3 +143,99 @@ button[type="submit"]:disabled {
   height: auto;
   object-fit: contain;
 }
+
+@media (max-width: 768px) {
+  .login-content-row {
+    flex-direction: column;
+    gap: 24px;
+    max-width: 95vw;
+    align-items: stretch;
+  }
+  .login-logo-left {
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    margin-bottom: 16px;
+  }
+  .login-logo-left img {
+    max-width: 180px;
+    width: 100%;
+  }
+  .login-form {
+    max-width: 100vw;
+    padding: 1.5rem 0.7rem;
+    box-shadow: 0 2px 8px rgba(14, 102, 85, 0.08);
+    gap: 1rem;
+  }
+  .login-logo {
+    margin-bottom: 1rem;
+  }
+  .login-logo img {
+    max-width: 120px;
+  }
+  .login-logo-top-right {
+    top: 10px;
+    right: 10px;
+  }
+  .login-logo-top-right img {
+    max-width: 40px;
+  }
+  .form-group input {
+    font-size: 1rem;
+    padding: 0.7rem 0.8rem;
+  }
+  button[type="submit"] {
+    font-size: 1rem;
+    padding: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-content-row {
+    gap: 12px;
+    max-width: 100vw;
+  }
+  .login-form {
+    padding: 1rem 0.3rem;
+    border-radius: 10px;
+    max-width: 340px;
+    margin: 0 auto;
+    width: 95vw;
+  }
+  .login-logo-left img {
+    max-width: 120px;
+  }
+  .login-logo img {
+    max-width: 80px;
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .login-container {
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 100vh;
+    height: auto;
+    overflow-y: auto;
+    padding: 24px 0;
+  }
+  .login-content-row {
+    flex-direction: column;
+    gap: 16px;
+    max-width: 95vw;
+    align-items: center;
+  }
+  .login-form {
+    max-width: 400px;
+    width: 95vw;
+    margin: 0 auto;
+    padding: 1.2rem 0.7rem;
+    border-radius: 12px;
+  }
+  .login-logo-left img {
+    max-width: 120px;
+  }
+  .login-logo img {
+    max-width: 90px;
+  }
+}
